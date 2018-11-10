@@ -1,4 +1,11 @@
 Generate speech audio from super long text through machine (via ["Google TTS"], ["ffmpeg"]).
+> Do you want to:
+> - Share your ideas anonymously on YouTube?
+> - Pretend on phone that you are not a kid (Home Alone)?
+> - Learn good english pronunciation for a speech?
+> - Make your computer read out your school notes?
+> - Experiment with various voices from around the globe?
+> - Or, [Upload Wikipedia TTS videos on YouTube]?
 
 
 ## setup
@@ -23,6 +30,8 @@ googletts "Hello 911, my husband is in danger!" -vsg FEMALE
 googletts "Dead man walking." -vn en-US-Wavenet-B
 # out.mp3 created with different male voice
 ```
+> Available [TTS voices]?
+
 
 ### reference
 
@@ -172,3 +181,4 @@ options = {
 [SSML]: https://developers.google.com/actions/reference/ssml
 [TTS voices]: https://cloud.google.com/text-to-speech/docs/voices
 [TTS client docs]: https://cloud.google.com/nodejs/docs/reference/text-to-speech/0.1.x/v1beta1.TextToSpeechClient
+[Upload Wikipedia TTS videos on YouTube]: https://www.youtube.com/results?search_query=wikipedia+audio+article
