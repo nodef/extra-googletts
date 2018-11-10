@@ -1,4 +1,4 @@
-Generate speech audio from super long text through machine (via "Google TTS", "ffmpeg").
+Generate speech audio from super long text through machine (via ["Google TTS"], ["ffmpeg"]).
 
 
 ## setup
@@ -161,9 +161,11 @@ options = {
 ```
 
 
-[![wikipedia-tts](https://i.imgur.com/Uu0KJ1U.jpg)](https://www.npmjs.com/package/wikipedia-tts)
+[![Nodef](https://i.imgur.com/LPVfMny.jpg)](https://nodef.github.io)
 > References: [SSML], [TTS voices], [TTS client docs].
 
+["Google TTS"]: https://cloud.google.com/text-to-speech/
+["ffmpeg"]: https://ffmpeg.org
 [Install ffmpeg]: https://www.ffmpeg.org/download.html
 [Enable API]: https://console.cloud.google.com/flows/enableapi?apiid=texttospeech.googleapis.com
 [Setup authentication]: https://cloud.google.com/docs/authentication/getting-started
