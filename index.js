@@ -208,7 +208,7 @@ async function console(A) {
     else if(A[i]==='-ot' || A[i]==='--output_text') Object.assign(o, {output: {text: true}});
     else if(A[i]==='-os' || A[i]==='--output_ssmls') Object.assign(o, {output: {ssmls: true}});
     else if(A[i]==='-oa' || A[i]==='--output_audios') Object.assign(o, {output: {audios: true}});
-    else if(A[i]==='-ac' || A[i]==='--audio_codec') Object.assign(o, {audio: {codec: A[++i]}});
+    else if(A[i]==='-aa' || A[i]==='--audio_acodec') Object.assign(o, {audio: {acodec: A[++i]}});
     else if(A[i]==='-vlc' || A[i]==='--voice_languagecode') Object.assign(o, {audios: {voice: {languageCode: A[++i]}}});
     else if(A[i]==='-vsg' || A[i]==='--voice_ssmlgender') Object.assign(o, {audios: {voice: {ssmlGender: A[++i]}}});
     else if(A[i]==='-vn' || A[i]==='--voice_name') Object.assign(o, {audios: {voice: {name: A[++i]}}});

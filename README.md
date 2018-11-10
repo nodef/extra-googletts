@@ -1,17 +1,80 @@
 Generate speech audio from super long text through machine (via "Google TTS", "ffmpeg").
-Get TTS audio for english text.
-
 
 
 ## setup
 
-1. [Install ffmpeg] and add to `PATH`.
-2. [Enable API] for Google Cloud Text-to-Speech API.
-3. [Setup authentication] with a service account.
+1. [Enable API] for Google Cloud Text-to-Speech API.
+2. [Setup authentication] with a service account.
+<br>
 
 
+## console
 
-## usage
+```bash
+googletts "I want to order a stuffed crust pizza"
+# out.mp3 created (yay!)
+
+googletts -i speech.txt -o speech.mp3
+# speech.mp3 created from text in speech.txt
+
+googletts "Hello 911, my husband is in danger!" -vsg FEMALE
+# out.mp3 created with female voice
+
+googletts "Dead man walking." -vn en-US-Wavenet-B
+# out.mp3 created with different male voice
+```
+
+### reference
+
+```bash
+googletts [options] <text>
+# --help: show this help
+# -o, --output: set output file (out.mp3)
+# -i, --input:  set input file
+# -c, --credentials:  set google credentials path
+# -ot, --output_text:   enable text output
+# -os, --output_ssmls:  enable SSMLs output
+# -oa, --output_audios: enable audios output
+# -aa, --audio_acodec:  set output audio acodec (copy)
+# -vlc, --voice_languagecode: set voice language code (en-US)
+# -vsg, --voice_ssmlgender:   set voice SSML gender (NEUTRAL)
+# -vn, --voice_name:          set voice name (en-US-Wavenet-D)
+# -qbt, --quote_breaktime:     set quoted text break time (250)
+# -qel, --quote_emphasislevel: set quoted text emphasis level (moderate)
+# -hbt, --heading_breaktime:     set heading text break time (4000)
+# -hbd, --heading_breakdiff:     set heading text break difference (250)
+# -hel, --heading_emphasislevel: set heading text emphasis level (strong)
+# -ebt, --ellipsis_breaktime: set ellipsis break time (1500)
+# -dbt, --dash_breaktime:     set dash break time (500)
+# -nbt, --newline_breaktime:  set newline break time (1000)
+# -bl, --block_length:    set SSMLs block length (5000)
+# -bs, --block_separator: set SSMLs block separator (.)
+
+# Environment variables:
+$GOOGLETTS_LOG # enable log (0)
+$GOOGLE_APPLICATION_CREDENTIALS # set google credentials path
+$GOOGLETTS_OUTPUT_TEXT   # enable text output (0)
+$GOOGLETTS_OUTPUT_SSMLS  # enable SSMLs output (0)
+$GOOGLETTS_OUTPUT_AUDIOS # enable audios output (0)
+$GOOGLETTS_AUDIO_ACODEC  # set output audio acodec (copy)
+$GOOGLETTS_AUDIOS_VOICE_LANGUAGECODE # set voice language code (en-US)
+$GOOGLETTS_AUDIOS_VOICE_SSMLGENDER   # set voice SSML gender (NEUTRAL)
+$GOOGLETTS_AUDIOS_VOICE_NAME         # set voice name (en-US-Wavenet-D)
+$GOOGLETTS_SSMLS_QUOTE_BREAKTIME     # set quoted text break time (250)
+$GOOGLETTS_SSMLS_QUOTE_EMPHASISLEVEL # set quoted text emphasis level (moderate)
+$GOOGLETTS_SSMLS_HEADING_BREAKTIME     # set heading text break time (4000)
+$GOOGLETTS_SSMLS_HEADING_BREAKDIFF     # set heading text break difference (250)
+$GOOGLETTS_SSMLS_HEADING_EMPHASISLEVEL # set heading text emphasis level (strong)
+$GOOGLETTS_SSMLS_ELLIPSIS_BREAKTIME # set ellipsis break time (1500)
+$GOOGLETTS_SSMLS_DASH_BREAKTIME     # set dash break time (500)
+$GOOGLETTS_SSMLS_NEWLINE_BREAKTIME  # set newline break time (1000)
+$GOOGLETTS_SSMLS_BLOCK_LENGTH    # set SSMLs block length (5000)
+$GOOGLETTS_SSMLS_BLOCK_SEPARATOR # set SSMLs block separator (.)
+```
+<br>
+
+
+## package
 
 ```javascript
 const english = require('@wikipedia-tts/english');
