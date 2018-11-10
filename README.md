@@ -170,15 +170,22 @@ options = {
 ```
 
 
+## contribute
+
+All your suggestions are welcome. Find out more creative things to do, and
+if this tool doesn't manage it, complain to me by [creating an issue].
+
+
 [![Nodef](https://i.imgur.com/LPVfMny.jpg)](https://nodef.github.io)
 > References: [SSML], [TTS voices], [TTS client docs].
 
 ["Google TTS"]: https://cloud.google.com/text-to-speech/
 ["ffmpeg"]: https://ffmpeg.org
+[Upload Wikipedia TTS videos on YouTube]: https://www.youtube.com/results?search_query=wikipedia+audio+article
 [Install ffmpeg]: https://www.ffmpeg.org/download.html
 [Enable API]: https://console.cloud.google.com/flows/enableapi?apiid=texttospeech.googleapis.com
 [Setup authentication]: https://cloud.google.com/docs/authentication/getting-started
 [SSML]: https://developers.google.com/actions/reference/ssml
 [TTS voices]: https://cloud.google.com/text-to-speech/docs/voices
 [TTS client docs]: https://cloud.google.com/nodejs/docs/reference/text-to-speech/0.1.x/v1beta1.TextToSpeechClient
-[Upload Wikipedia TTS videos on YouTube]: https://www.youtube.com/results?search_query=wikipedia+audio+article
+[creating an issue]: https://github.com/nodef/extra-googletts/issues
