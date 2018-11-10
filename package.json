@@ -1,6 +1,6 @@
 {
   "name": "extra-googletts",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Generate speech audio from super long text through machine (via \"Google TTS\", \"ffmpeg\").",
   "main": "index.js",
   "scripts": {
@@ -35,6 +35,7 @@
   "dependencies": {
     "@google-cloud/text-to-speech": "^0.3.0",
     "boolean": "^0.2.0",
+    "extra-ffmpeg": "^4.0.3",
     "random-item": "^1.0.0",
     "tempy": "^0.2.1"
   }
