@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const textToSpeech = require('@google-cloud/text-to-speech');
 const randomItem = require('random-item');
 const getStdin = require('get-stdin');

@@ -7,10 +7,12 @@ Generate speech audio from super long text through machine (via ["Google TTS"], 
 > - Experiment with various voices from around the globe?
 > - Or, [Upload Wikipedia TTS videos on YouTube]?
 
+Sample: ["I want to order a stuffed crust pizza"](https://clyp.it/kje2yfdk).
+<br>
+
 
 ## setup
 
-Sample: ["I want to order a stuffed crust pizza"](https://clyp.it/kje2yfdk).
 1. [Enable API] for Google Cloud Text-to-Speech API.
 2. [Setup authentication] with a service account.
 <br>
@@ -169,6 +171,7 @@ options = {
   }
 }
 ```
+<br>
 
 
 ## contribute
