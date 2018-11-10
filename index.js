@@ -178,11 +178,11 @@ function outputAudio(out, auds, o) {
 };
 
 // Write Full TTS output to file.
-async function english(out, txt, o) {
+async function googletts(out, txt, o) {
   var o = o||{};
   var u = Object.assign({}, OUTPUT, o.output);
   var t = GOOGLE? {keyFilename: randomItem(GOOGLE.split(';'))}:null;
-  if(LOG) console.log('@english:', out);
+  if(LOG) console.log('@googletts:', out);
   var tts = new textToSpeech.TextToSpeechClient(o.tts||t);
   var pth = pathFilename(out);
   var txt = outputText(u.text? pth+'.txt':null, txt);
@@ -193,4 +193,4 @@ async function english(out, txt, o) {
   if(!u.audios) { for(var f of auds) fs.unlink(f, FN_NOP); }
   return out;
 };
-module.exports = english;
+module.exports = googletts;
