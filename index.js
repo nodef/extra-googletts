@@ -1,5 +1,6 @@
 const textToSpeech = require('@google-cloud/text-to-speech');
 const randomItem = require('random-item');
+const getStdin = require('get-stdin');
 const boolean = require('boolean');
 const tempy = require('tempy');
 const cp = require('child_process');
@@ -194,3 +195,35 @@ async function googletts(out, txt, o) {
   return out;
 };
 module.exports = googletts;
+
+// Run on console.
+async function console(A) {
+  var txt = await getStdin();
+  var out = 'out.mp3', o = {};
+  for(var i=2, I=A.length; i<I; i++) {
+    if(A[i]==='--help') return cp.execSync('less README.md', {cwd: __dirname, stdio: [0, 1, 2]});
+    else if(A[i]==='-o' || A[i]==='--output') out = A[++i];
+    else if(A[i]==='-i' || A[i]==='--input') txt = fs.readFileSync(A[++i], 'utf8');
+    else if(A[i]==='-c' || A[i]==='--credentials') Object.assign(o, {tts: A[++i]});
+    else if(A[i]==='-ot' || A[i]==='--output_text') Object.assign(o, {output: {text: true}});
+    else if(A[i]==='-os' || A[i]==='--output_ssmls') Object.assign(o, {output: {ssmls: true}});
+    else if(A[i]==='-oa' || A[i]==='--output_audios') Object.assign(o, {output: {audios: true}});
+    else if(A[i]==='-ac' || A[i]==='--audio_codec') Object.assign(o, {audio: {codec: A[++i]}});
+    else if(A[i]==='-vlc' || A[i]==='--voice_languagecode') Object.assign(o, {audios: {voice: {languageCode: A[++i]}}});
+    else if(A[i]==='-vsg' || A[i]==='--voice_ssmlgender') Object.assign(o, {audios: {voice: {ssmlGender: A[++i]}}});
+    else if(A[i]==='-vn' || A[i]==='--voice_name') Object.assign(o, {audios: {voice: {name: A[++i]}}});
+    else if(A[i]==='-qbt' || A[i]==='--quote_breaktime') Object.assign(o, {ssmls: {quote: {breakTime: parseFloat(A[++i])}}});
+    else if(A[i]==='-qel' || A[i]==='--quote_emphasislevel') Object.assign(o, {ssmls: {quote: {emphasisLevel: A[++i]}}});
+    else if(A[i]==='-hbt' || A[i]==='--heading_breaktime') Object.assign(o, {ssmls: {heading: {breakTime: parseFloat(A[++i])}}});
+    else if(A[i]==='-hbd' || A[i]==='--heading_breakdiff') Object.assign(o, {ssmls: {heading: {breakDiff: parseFloat(A[++i])}}});
+    else if(A[i]==='-hel' || A[i]==='--heading_emphasislevel') Object.assign(o, {ssmls: {heading: {emphasisLevel: A[++i]}}});
+    else if(A[i]==='-ebt' || A[i]==='--ellipsis_breaktime') Object.assign(o, {ssmls: {ellipsis: {breakTime: parseFloat(A[++i])}}});
+    else if(A[i]==='-dbt' || A[i]==='--dash_breaktime') Object.assign(o, {ssmls: {dash: {breakTime: parseFloat(A[++i])}}});
+    else if(A[i]==='-nbt' || A[i]==='--newline_breaktime') Object.assign(o, {ssmls: {newline: {breakTime: parseFloat(A[++i])}}});
+    else if(A[i]==='-bl' || A[i]==='--block_length') Object.assign(o, {ssmls: {block: {length: parseInt(A[++i], 10)}}});
+    else if(A[i]==='-bs' || A[i]==='--block_separator') Object.assign(o, {ssmls: {block: {separator: A[++i]}}});
+    else txt = A[i];
+  }
+  await googletts(out, txt, o);
+};
+if(require.main===module) console(process.argv);
