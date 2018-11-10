@@ -6,6 +6,8 @@ Generate speech audio from super long text through machine (via ["Google TTS"], 
 > - Make your computer read out your school notes?
 > - Experiment with various voices from around the globe?
 > - Or, [Upload Wikipedia TTS videos on YouTube]?
+> <br>
+> Sample: ["I want to order a stuffed crust pizza"].
 
 
 ## setup
@@ -182,6 +184,7 @@ if this tool doesn't manage it, complain to me by [creating an issue].
 ["Google TTS"]: https://cloud.google.com/text-to-speech/
 ["ffmpeg"]: https://ffmpeg.org
 [Upload Wikipedia TTS videos on YouTube]: https://www.youtube.com/results?search_query=wikipedia+audio+article
+["I want to order a stuffed crust pizza"]: https://clyp.it/kje2yfdk
 [Install ffmpeg]: https://www.ffmpeg.org/download.html
 [Enable API]: https://console.cloud.google.com/flows/enableapi?apiid=texttospeech.googleapis.com
 [Setup authentication]: https://cloud.google.com/docs/authentication/getting-started
