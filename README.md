@@ -77,63 +77,87 @@ $GOOGLETTS_SSMLS_BLOCK_SEPARATOR # set SSMLs block separator (.)
 ## package
 
 ```javascript
-const english = require('@wikipedia-tts/english');
-// english(<output>, <text>, [options])
+const googletts = require('extra-googletts');
+
+await googletts('out.mp3', 'I want to order a stuffed crust pizza');
+// out.mp3 created (yay!)
+
+const fs = require('fs');
+var speech = fs.readFileSync('speech.txt', 'utf8');
+await googletts('speech.mp3', speech)
+// speech.mp3 created from text in speech.txt
+
+await googletts('out.mp3', 'Hello 911, my husband is in danger!', {
+  audios: {voice: {ssmlGender: 'FEMALE'}}
+});
+// out.mp3 created with female voice
+
+await googletts('out.mp3', 'Dead man walking.', {
+  audios: {voice: {name: 'en-US-Wavenet-B'}}
+});
+// out.mp3 created with different male voice
+```
+
+### reference
+
+```javascript
+const googletts = require('extra-googletts');
+
+googletts(output, text, options={})
+// output:  output file
+// text:    input text
+// options: optional
 // -> Promise <output>
 
-// [options]: {
-//   output: {
-//     text: $WIKIPEDIATTS_OUTPUT_TEXT||false,
-//     ssmls: $WIKIPEDIATTS_OUTPUT_SSMLS||false,
-//     audios: $WIKIPEDIATTS_OUTPUT_AUDIOS||false
-//   },
-//   tts: {
-//     // See TTS client options (below)
-//   },
-//   audio: {
-//     acodec: $WIKIPEDIATTS_AUDIO_ACODEC||'copy',
-//     cp: {
-//       sync: true,
-//       stdio: [0, 1, 2]
-//     }
-//   },
-//   audios: {
-//     voice: {
-//       name: $WIKIPEDIATTS_AUDIOS_VOICE_NAME||'en-US-Wavenet-D',
-//       languageCode: $WIKIPEDIATTS_AUDIOS_VOICE_LANGUAGECODE||'en-US',
-//       ssmlGender: $WIKIPEDIATTS_AUDIOS_VOICE_SSMLGENDER||'NEUTRAL'
-//     }
-//   },
-//   ssmls: {
-//     block: {
-//       length: $WIKIPEDIATTS_SSMLS_BLOCK_LENGTH||5000,
-//       separator: $WIKIPEDIATTS_SSMLS_BLOCK_SEPARATOR||'.'
-//     },
-//     quote: {
-//       breakTime: $WIKIPEDIATTS_SSMLS_QUOTE_BREAKTIME||250,
-//       emphasisLevel: $WIKIPEDIATTS_SSMLS_QUOTE_EMPHASISLEVEL||'moderate'
-//     },
-//     heading: {
-//       breakTime: $WIKIPEDIATTS_SSMLS_HEADING_BREAKTIME||4000,
-//       breakDiff: $WIKIPEDIATTS_SSMLS_HEADING_BREAKDIFF||250,
-//       emphasisLevel: $WIKIPEDIATTS_SSMLS_HEADING_EMPHASISLEVEL||'strong',
-//     },
-//     ellipsis: {
-//       breakTime: $WIKIPEDIATTS_SSMLS_ELLIPSIS_BREAKTIME||1500
-//     },
-//     dash: {
-//       breakTime: $WIKIPEDIATTS_SSMLS_DASH_BREAKTIME||500
-//     },
-//     newline: {
-//       breakTime: $WIKIPEDIATTS_SSMLS_NEWLINE_BREAKTIME||1000
-//     }
-//   }
-// }
-
-
-
-await english('output.mp3', 'The Knight said you were gutless!');
-// output.mp3 created
+// Default options:
+options = {
+  output: {
+    text: false,  // enable text output
+    ssmls: false, // enable SSMLs output
+    audios: false // enable audios output
+  },
+  tts: {
+    // See TTS client options (below)
+  },
+  audio: {
+    acodec: 'copy',    // set output audio acodec
+    cp: {
+      sync: true,      // enable synchronous child process
+      stdio: [0, 1, 2] // set child process stdio
+    }
+  },
+  audios: {
+    voice: {
+      languageCode: 'en-US',   // set voice language code
+      ssmlGender: 'NEUTRAL'    // set voice SSML gender
+      name: 'en-US-Wavenet-D', // set voice name
+    }
+  },
+  ssmls: {
+    quote: {
+      breakTime: 250,           // set quoted text break time
+      emphasisLevel: 'moderate' // set quoted text emphasis level
+    },
+    heading: {
+      breakTime: 4000,         // set heading text break time
+      breakDiff: 250,          // set heading text break difference
+      emphasisLevel: 'strong', // set heading text emphasis level
+    },
+    ellipsis: {
+      breakTime: 1500 // set ellipsis break time
+    },
+    dash: {
+      breakTime: 500  // set dash break time
+    },
+    newline: {
+      breakTime: 1000 // set newline break time
+    },
+    block: {
+      length: 5000,  // set SSMLs block length
+      separator: '.' // set SSMLs block separator
+    }
+  }
+}
 ```
 
 
