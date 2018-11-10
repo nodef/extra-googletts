@@ -2,55 +2,55 @@ const textToSpeech = require('@google-cloud/text-to-speech');
 const randomItem = require('random-item');
 const boolean = require('boolean');
 const tempy = require('tempy');
-const path = require('path');
 const cp = require('child_process');
+const path = require('path');
 const fs = require('fs');
 
 
 // Global variables
 const E = process.env;
-const FN_NOP = () => 0;
-const LOG = boolean(E['WIKIPEDIATTS_LOG']||'0');
+const LOG = boolean(E['GOOGLETTS_LOG']||'0');
 const OUTPUT = {
-  text: boolean(E['WIKIPEDIATTS_OUTPUT_TEXT']||'0'),
-  ssmls: boolean(E['WIKIPEDIATTS_OUTPUT_SSMLS']||'0'),
-  audios: boolean(E['WIKIPEDIATTS_OUTPUT_AUDIOS']||'0')
+  text: boolean(E['GOOGLETTS_OUTPUT_TEXT']||'0'),
+  ssmls: boolean(E['GOOGLETTS_OUTPUT_SSMLS']||'0'),
+  audios: boolean(E['GOOGLETTS_OUTPUT_AUDIOS']||'0')
 };
 const AUDIO = {
-  acodec: E['WIKIPEDIATTS_AUDIO_ACODEC']||'copy'
+  acodec: E['GOOGLETTS_AUDIO_ACODEC']||'copy'
 };
 const CP = {
   sync: true,
   stdio: [0, 1, 2]
 };
 const AUDIOS_VOICE = {
-  languageCode: E['WIKIPEDIATTS_AUDIOS_VOICE_LANGUAGECODE']||'en-US',
-  ssmlGender: E['WIKIPEDIATTS_AUDIOS_VOICE_SSMLGENDER']||'NEUTRAL'
+  languageCode: E['GOOGLETTS_AUDIOS_VOICE_LANGUAGECODE']||'en-US',
+  ssmlGender: E['GOOGLETTS_AUDIOS_VOICE_SSMLGENDER']||'NEUTRAL'
 };
-const AUDIOS_VOICE_NAME = E['WIKIPEDIATTS_AUDIOS_VOICE_NAME']||'en-US-Wavenet-D';
+const AUDIOS_VOICE_NAME = E['GOOGLETTS_AUDIOS_VOICE_NAME']||'en-US-Wavenet-D';
 const SSMLS_QUOTE = {
-  breakTime: parseFloat(E['WIKIPEDIATTS_SSMLS_QUOTE_BREAKTIME']||'250'),
-  emphasisLevel: E['WIKIPEDIATTS_SSMLS_QUOTE_EMPHASISLEVEL']||'moderate'
+  breakTime: parseFloat(E['GOOGLETTS_SSMLS_QUOTE_BREAKTIME']||'250'),
+  emphasisLevel: E['GOOGLETTS_SSMLS_QUOTE_EMPHASISLEVEL']||'moderate'
 };
 const SSMLS_HEADING = {
-  breakTime: parseFloat(E['WIKIPEDIATTS_SSMLS_HEADING_BREAKTIME']||'4000'),
-  breakDiff: parseFloat(E['WIKIPEDIATTS_SSMLS_HEADING_BREAKDIFF']||'250'),
-  emphasisLevel: parseFloat(E['WIKIPEDIATTS_SSMLS_HEADING_EMPHASISLEVEL']||'strong'),
+  breakTime: parseFloat(E['GOOGLETTS_SSMLS_HEADING_BREAKTIME']||'4000'),
+  breakDiff: parseFloat(E['GOOGLETTS_SSMLS_HEADING_BREAKDIFF']||'250'),
+  emphasisLevel: parseFloat(E['GOOGLETTS_SSMLS_HEADING_EMPHASISLEVEL']||'strong'),
 };
 const SSMLS_ELLIPSIS = {
-  breakTime: parseFloat(E['WIKIPEDIATTS_SSMLS_ELLIPSIS_BREAKTIME']||'1500')
+  breakTime: parseFloat(E['GOOGLETTS_SSMLS_ELLIPSIS_BREAKTIME']||'1500')
 };
 const SSMLS_DASH = {
-  breakTime: parseFloat(E['WIKIPEDIATTS_SSMLS_DASH_BREAKTIME']||'500')
+  breakTime: parseFloat(E['GOOGLETTS_SSMLS_DASH_BREAKTIME']||'500')
 };
 const SSMLS_NEWLINE = {
-  breakTime: parseFloat(E['WIKIPEDIATTS_SSMLS_NEWLINE_BREAKTIME']||'1000')
+  breakTime: parseFloat(E['GOOGLETTS_SSMLS_NEWLINE_BREAKTIME']||'1000')
 };
 const SSMLS_BLOCK = {
-  length: parseFloat(E['WIKIPEDIATTS_SSMLS_BLOCK_LENGTH']||'5000'),
-  separator: E['WIKIPEDIATTS_SSMLS_BLOCK_SEPARATOR']||'.'
+  length: parseFloat(E['GOOGLETTS_SSMLS_BLOCK_LENGTH']||'5000'),
+  separator: E['GOOGLETTS_SSMLS_BLOCK_SEPARATOR']||'.'
 };
 const GOOGLE = E['GOOGLE_APPLICATION_CREDENTIALS'];
+const FN_NOP = () => 0;
 
 
 // Get filename, without extension.
