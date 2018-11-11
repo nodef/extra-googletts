@@ -4,6 +4,7 @@ const randomItem = require('random-item');
 const getStdin = require('get-stdin');
 const boolean = require('boolean');
 const tempy = require('tempy');
+const _ = require('lodash');
 const cp = require('child_process');
 const path = require('path');
 const fs = require('fs');
@@ -11,44 +12,44 @@ const fs = require('fs');
 
 // Global variables
 const E = process.env;
-const LOG = boolean(E['GOOGLETTS_LOG']||'0');
-const CREDENTIALS = {
-  keyFilename: E['GOOGLE_APPLICATION_CREDENTIALS']
+const OPTIONS = {
+  log: boolean(E['GOOGLETTS_LOG']||'0'),
+  credentials: {
+    keyFilename: E['GOOGLE_APPLICATION_CREDENTIALS']
+  },
+  audio: {
+    acodec: E['GOOGLETTS_AUDIO_ACODEC']||'copy',
+    cp: {sync: true, stdio: [0, 1, 2]}
+  },
+  voice: {
+    name: null,
+    languageCode: E['GOOGLETTS_VOICE_LANGUAGECODE']||'en-US',
+    ssmlGender: E['GOOGLETTS_VOICE_SSMLGENDER']||'NEUTRAL'
+  },
+  quote: {
+    breakTime: parseFloat(E['GOOGLETTS_QUOTE_BREAKTIME']||'250'),
+    emphasisLevel: E['GOOGLETTS_QUOTE_EMPHASISLEVEL']||'moderate'
+  },
+  heading: {
+    breakTime: parseFloat(E['GOOGLETTS_HEADING_BREAKTIME']||'4000'),
+    breakDiff: parseFloat(E['GOOGLETTS_HEADING_BREAKDIFF']||'250'),
+    emphasisLevel: parseFloat(E['GOOGLETTS_HEADING_EMPHASISLEVEL']||'strong'),
+  },
+  ellipsis: {
+    breakTime: parseFloat(E['GOOGLETTS_ELLIPSIS_BREAKTIME']||'1500')
+  },
+  dash: {
+    breakTime: parseFloat(E['GOOGLETTS_DASH_BREAKTIME']||'500')
+  },
+  newline: {
+    breakTime: parseFloat(E['GOOGLETTS_NEWLINE_BREAKTIME']||'1000')
+  },
+  block: {
+    length: parseFloat(E['GOOGLETTS_BLOCK_LENGTH']||'5000'),
+    separator: E['GOOGLETTS_BLOCK_SEPARATOR']||'.'
+  },
 };
-const AUDIO = {
-  acodec: E['GOOGLETTS_AUDIO_ACODEC']||'copy'
-};
-const CP = {
-  sync: true,
-  stdio: [0, 1, 2]
-};
-const VOICE = {
-  name: E['GOOGLETTS_AUDIOS_VOICE_NAME']||'en-US-Wavenet-D',
-  languageCode: E['GOOGLETTS_AUDIOS_VOICE_LANGUAGECODE']||'en-US',
-  ssmlGender: E['GOOGLETTS_AUDIOS_VOICE_SSMLGENDER']||'NEUTRAL'
-};
-const QUOTE = {
-  breakTime: parseFloat(E['GOOGLETTS_QUOTE_BREAKTIME']||'250'),
-  emphasisLevel: E['GOOGLETTS_QUOTE_EMPHASISLEVEL']||'moderate'
-};
-const HEADING = {
-  breakTime: parseFloat(E['GOOGLETTS_HEADING_BREAKTIME']||'4000'),
-  breakDiff: parseFloat(E['GOOGLETTS_HEADING_BREAKDIFF']||'250'),
-  emphasisLevel: parseFloat(E['GOOGLETTS_HEADING_EMPHASISLEVEL']||'strong'),
-};
-const ELLIPSIS = {
-  breakTime: parseFloat(E['GOOGLETTS_ELLIPSIS_BREAKTIME']||'1500')
-};
-const DASH = {
-  breakTime: parseFloat(E['GOOGLETTS_DASH_BREAKTIME']||'500')
-};
-const NEWLINE = {
-  breakTime: parseFloat(E['GOOGLETTS_NEWLINE_BREAKTIME']||'1000')
-};
-const BLOCK = {
-  length: parseFloat(E['GOOGLETTS_BLOCK_LENGTH']||'5000'),
-  separator: E['GOOGLETTS_BLOCK_SEPARATOR']||'.'
-};
+const VOICE_NAME = E['GOOGLETTS_VOICE_NAME']||'en-US-Wavenet-D';
 const FN_NOP = () => 0;
 
 
@@ -59,7 +60,6 @@ function pathFilename(pth) {
 
 // Write to file, return promise.
 function fsWriteFile(pth, dat, o) {
-  if(LOG) console.log('fsWriteFile:', pth);
   return new Promise((fres, frej) => {
     fs.writeFile(pth, dat, o, (err) => {
       if(err) frej(err);
@@ -70,8 +70,6 @@ function fsWriteFile(pth, dat, o) {
 
 // Execute child process, return promise.
 function cpExec(cmd, o) {
-  o = Object.assign({}, CP, o);
-  if(LOG) console.log('cpExec:', cmd);
   if(o.sync) return Promise.resolve({stdout: cp.execSync(cmd, o)});
   return new Promise((fres, frej) => {
     cp.exec(cmd, o, (err, stdout, stderr) => {
@@ -83,12 +81,7 @@ function cpExec(cmd, o) {
 
 // Get SSML from text.
 function textSsml(txt, o) {
-  var o = o||{};
-  var q = Object.assign({}, SSMLS_QUOTE, o.quote);
-  var h = Object.assign({}, SSMLS_HEADING, o.heading);
-  var e = Object.assign({}, SSMLS_ELLIPSIS, o.ellipsis);
-  var d = Object.assign({}, SSMLS_DASH, o.dash);
-  var n = Object.assign({}, SSMLS_NEWLINE, o.newline);
+  var q = o.quote, h = o.heading, e = o.ellipsis, d = o.dash, n = o.newline;
   txt = txt.replace(/([\'\"])(.*?)\1/gm, (m, p1, p2) => {
     var brk = `<break time="${q.breakTime}ms"/>`;
     var emp = `<emphasis level="${q.emphasisLevel}">${p1}${p2}${p1}</emphasis>`;
@@ -109,8 +102,7 @@ function textSsml(txt, o) {
 
 // Get SSML block from long text.
 function textSsmlBlock(txt, o) {
-  var o = o||{};
-  var b = Object.assign({}, SSMLS_BLOCK, o.block);
+  var b = o.block;
   for(var end=b.length;;) {
     end = Math.floor(0.75*end);
     var i = txt.lastIndexOf(b.separator, end)+1;
@@ -121,18 +113,18 @@ function textSsmlBlock(txt, o) {
   return [ssml, txt.substring(i)];
 };
 
-// Write TTS output to file.
-function audiosWrite(tts, out, ssml, o) {
-  var o = o||{};
-  if(LOG) console.log('audioWrite:', out);
-  var v = Object.assign({}, AUDIOS_VOICE, o.voice);
-  if(v.languageCode===AUDIOS_VOICE.languageCode) v.name = AUDIOS_VOICE_NAME;
-  var req = {input: {ssml}, voice: v, audioConfig: {audioEncoding: 'MP3'}};
+// Write TTS audio to file.
+function audioWrite(out, ssml, tts, o) {
+  var l = o.log, v = o.voice;
+  if(!v.name) v.name = VOICE_NAME;
+  else v.languageCode = v.name.substring(0, 5);
+  var enc = path.extname(out).substring(1).toUpperCase();
+  var req = {input: {ssml}, voice: v, audioConfig: {audioEncoding: enc}};
   return new Promise((fres, frej) => {
     tts.synthesizeSpeech(req, (err, res) => {
       if(err) return frej(err);
       fs.writeFile(out, res.audioContent, 'binary', (err) => {
-        if(LOG) console.log('audioWrite:', out);
+        if(l) console.log('audioWrite:', out);
         if(err) return frej(err);
         fres(out);
       });
@@ -140,56 +132,45 @@ function audiosWrite(tts, out, ssml, o) {
   });
 };
 
-// Generate output text file.
-function outputText(out, txt) {
-  if(LOG) console.log('outputText:', out);
-  if(out) fsWriteFile(out, txt);
-  return '\n'+txt;
-};
-
-// Generate output SSML part files.
-function outputSsmls(out, txt, o) {
-  if(LOG) console.log('outputSsmls:', out);
-  var pth = out? pathFilename(out):null;
-  var ext = out? path.extname(out):null;
+// Generate output SSML parts.
+function outputSsmls(txt, o) {
   for(var i=0, z=[]; txt; i++) {
     var [ssml, txt] = textSsmlBlock(txt, o);
-    if(out) fsWriteFile(`${pth}.${i}${ext}`, ssml);
     z[i] = ssml;
   }
   return z;
 };
 
 // Generate output audio part files.
-function outputAudios(tts, out, ssmls, o) {
-  if(LOG) console.log('outputAudios:', out);
+function outputAudios(out, ssmls, tts, o) {
+  if(o.log) console.log('outputAudios:', out, ssmls.length);
   var pth = pathFilename(out), ext = path.extname(out);
   for(var i=0, I=ssmls.length, z=[]; i<I; i++)
-    z[i] = audiosWrite(tts, `${pth}.${i}${ext}`, ssmls[i], o);
+    z[i] = audiosWrite(`${pth}.${i}${ext}`, ssmls[i], tts, o);
   return Promise.all(z);
 };
 
 // Generate output audio file.
 function outputAudio(out, auds, o) {
-  var o = Object.assign({}, AUDIO, o);
-  if(LOG) console.log('outputAudio:', out);
-  return cpExec(`ffmpeg -y -i "concat:${auds.join('|')}" -acodec ${o.acodec} "${out}"`, o.cp||{}).then(() => out);
+  var l = o.log, a = o.audio, 
+  var cmd = `ffmpeg -y -i "concat:${auds.join('|')}" -acodec ${o.acodec} "${out}"`;
+  if(l) { console.log('outputAudio:', out, auds.length); console.log('-cp:', cmd); }
+  return cpExec(cmd, Object.assign()).then(() => out);
 };
 
 // Write Full TTS output to file.
 async function googletts(out, txt, o) {
-  var o = o||{};
-  var u = Object.assign({}, OUTPUT, o.output);
-  var t = GOOGLE? {keyFilename: randomItem(GOOGLE.split(';'))}:null;
-  if(LOG) console.log('@googletts:', out);
-  var tts = new textToSpeech.TextToSpeechClient(o.tts||t);
-  var pth = pathFilename(out);
-  var txt = outputText(u.text? pth+'.txt':null, txt);
-  var ssmls = outputSsmls(u.ssmls? pth+'.ssml':null, txt, o.ssmls);
-  var audp = u.audios? pth+'.mp3':tempy.file({extension: 'mp3'});
-  var auds = await outputAudios(tts, audp, ssmls, o.audios);
-  out = await outputAudio(out, auds, o.audio);
-  if(!u.audios) { for(var f of auds) fs.unlink(f, FN_NOP); }
+  var o = _.merge({}, OPTIONS, o);
+  var l = o.log, c = o.credentials;
+  if(l) console.log('@googletts:', out, txt);
+  if(c.keyFilename) c.keyFilename = randomItem(c.keyFilename.split(';'));
+  var tts = new textToSpeech.TextToSpeechClient(c);
+  var pth = pathFilename(out), ext = path.extname(out);
+  var aud = tempy.file({extension: ext.substring(1)});
+  var ssmls = outputSsmls('\n'+txt, o);
+  var auds = await outputAudios(aud, ssmls, tts, o);
+  out = await outputAudio(out, auds, o);
+  for(var f of auds) fs.unlink(f, FN_NOP);
   return out;
 };
 module.exports = googletts;
