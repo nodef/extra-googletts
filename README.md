@@ -24,7 +24,7 @@ Sample: ["I want to order a stuffed crust pizza"](https://clyp.it/kje2yfdk).
 googletts "I want to order a stuffed crust pizza"
 # out.mp3 created (yay!)
 
-googletts -i speech.txt -o speech.mp3
+googletts -t speech.txt -o speech.mp3
 # speech.mp3 created from text in speech.txt
 
 googletts "Hello 911, my husband is in danger!" -vsg FEMALE
@@ -41,13 +41,10 @@ googletts "Dead man walking." -vn en-US-Wavenet-B
 ```bash
 googletts [options] <text>
 # --help: show this help
-# -o, --output: set output file (out.mp3)
-# -i, --input:  set input file
-# -c, --credentials:  set google credentials path
-# -ot, --output_text:   enable text output
-# -os, --output_ssmls:  enable SSMLs output
-# -oa, --output_audios: enable audios output
-# -aa, --audio_acodec:  set output audio acodec (copy)
+# -o, --output: set output audio file (out.mp3)
+# -t, --text:   set input text file
+# -c, --credentials:   set google credentials path
+# -aa, --audio_acodec: set output audio acodec (copy)
 # -vlc, --voice_languagecode: set voice language code (en-US)
 # -vsg, --voice_ssmlgender:   set voice SSML gender (NEUTRAL)
 # -vn, --voice_name:          set voice name (en-US-Wavenet-D)
@@ -65,23 +62,20 @@ googletts [options] <text>
 # Environment variables:
 $GOOGLETTS_LOG # enable log (0)
 $GOOGLE_APPLICATION_CREDENTIALS # set google credentials path
-$GOOGLETTS_OUTPUT_TEXT   # enable text output (0)
-$GOOGLETTS_OUTPUT_SSMLS  # enable SSMLs output (0)
-$GOOGLETTS_OUTPUT_AUDIOS # enable audios output (0)
-$GOOGLETTS_AUDIO_ACODEC  # set output audio acodec (copy)
-$GOOGLETTS_AUDIOS_VOICE_LANGUAGECODE # set voice language code (en-US)
-$GOOGLETTS_AUDIOS_VOICE_SSMLGENDER   # set voice SSML gender (NEUTRAL)
-$GOOGLETTS_AUDIOS_VOICE_NAME         # set voice name (en-US-Wavenet-D)
-$GOOGLETTS_SSMLS_QUOTE_BREAKTIME     # set quoted text break time (250)
-$GOOGLETTS_SSMLS_QUOTE_EMPHASISLEVEL # set quoted text emphasis level (moderate)
-$GOOGLETTS_SSMLS_HEADING_BREAKTIME     # set heading text break time (4000)
-$GOOGLETTS_SSMLS_HEADING_BREAKDIFF     # set heading text break difference (250)
-$GOOGLETTS_SSMLS_HEADING_EMPHASISLEVEL # set heading text emphasis level (strong)
-$GOOGLETTS_SSMLS_ELLIPSIS_BREAKTIME # set ellipsis break time (1500)
-$GOOGLETTS_SSMLS_DASH_BREAKTIME     # set dash break time (500)
-$GOOGLETTS_SSMLS_NEWLINE_BREAKTIME  # set newline break time (1000)
-$GOOGLETTS_SSMLS_BLOCK_LENGTH    # set SSMLs block length (5000)
-$GOOGLETTS_SSMLS_BLOCK_SEPARATOR # set SSMLs block separator (.)
+$GOOGLETTS_AUDIO_ACODEC        # set output audio acodec (copy)
+$GOOGLETTS_VOICE_LANGUAGECODE  # set voice language code (en-US)
+$GOOGLETTS_VOICE_SSMLGENDER    # set voice SSML gender (NEUTRAL)
+$GOOGLETTS_VOICE_NAME          # set voice name (en-US-Wavenet-D)
+$GOOGLETTS_QUOTE_BREAKTIME     # set quoted text break time (250)
+$GOOGLETTS_QUOTE_EMPHASISLEVEL # set quoted text emphasis level (moderate)
+$GOOGLETTS_HEADING_BREAKTIME     # set heading text break time (4000)
+$GOOGLETTS_HEADING_BREAKDIFF     # set heading text break difference (250)
+$GOOGLETTS_HEADING_EMPHASISLEVEL # set heading text emphasis level (strong)
+$GOOGLETTS_ELLIPSIS_BREAKTIME # set ellipsis break time (1500)
+$GOOGLETTS_DASH_BREAKTIME     # set dash break time (500)
+$GOOGLETTS_NEWLINE_BREAKTIME  # set newline break time (1000)
+$GOOGLETTS_BLOCK_LENGTH    # set SSMLs block length (5000)
+$GOOGLETTS_BLOCK_SEPARATOR # set SSMLs block separator (.)
 ```
 <br>
 
@@ -123,12 +117,8 @@ googletts(output, text, options={})
 
 // Default options:
 options = {
-  output: {
-    text: false,  // enable text output
-    ssmls: false, // enable SSMLs output
-    audios: false // enable audios output
-  },
-  tts: {
+  log: false, // enable log
+  credentials: {
     // See TTS client options (below)
   },
   audio: {
@@ -138,36 +128,32 @@ options = {
       stdio: [0, 1, 2] // set child process stdio
     }
   },
-  audios: {
-    voice: {
-      languageCode: 'en-US',   // set voice language code
-      ssmlGender: 'NEUTRAL'    // set voice SSML gender
-      name: 'en-US-Wavenet-D', // set voice name
-    }
+  voice: {
+    languageCode: 'en-US',   // set voice language code
+    ssmlGender: 'NEUTRAL'    // set voice SSML gender
+    name: 'en-US-Wavenet-D', // set voice name
+  }
+  quote: {
+    breakTime: 250,           // set quoted text break time
+    emphasisLevel: 'moderate' // set quoted text emphasis level
   },
-  ssmls: {
-    quote: {
-      breakTime: 250,           // set quoted text break time
-      emphasisLevel: 'moderate' // set quoted text emphasis level
-    },
-    heading: {
-      breakTime: 4000,         // set heading text break time
-      breakDiff: 250,          // set heading text break difference
-      emphasisLevel: 'strong', // set heading text emphasis level
-    },
-    ellipsis: {
-      breakTime: 1500 // set ellipsis break time
-    },
-    dash: {
-      breakTime: 500  // set dash break time
-    },
-    newline: {
-      breakTime: 1000 // set newline break time
-    },
-    block: {
-      length: 5000,  // set SSMLs block length
-      separator: '.' // set SSMLs block separator
-    }
+  heading: {
+    breakTime: 4000,         // set heading text break time
+    breakDiff: 250,          // set heading text break difference
+    emphasisLevel: 'strong', // set heading text emphasis level
+  },
+  ellipsis: {
+    breakTime: 1500 // set ellipsis break time
+  },
+  dash: {
+    breakTime: 500  // set dash break time
+  },
+  newline: {
+    breakTime: 1000 // set newline break time
+  },
+  block: {
+    length: 5000,  // set SSMLs block length
+    separator: '.' // set SSMLs block separator
   }
 }
 ```
@@ -180,7 +166,7 @@ All your suggestions are welcome. Find out more creative things to do, and
 if this tool doesn't manage, contribute by [creating an issue].
 
 
-[![Nodef](https://i.imgur.com/LPVfMny.jpg)](https://nodef.github.io)
+[![nodef](https://i.imgur.com/LPVfMny.jpg)](https://nodef.github.io)
 > References: [SSML], [TTS voices], [TTS client docs].
 
 ["Google TTS"]: https://cloud.google.com/text-to-speech/
