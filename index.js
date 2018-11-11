@@ -158,7 +158,13 @@ function outputAudio(out, auds, o) {
   return cpExec(cmd, Object.assign()).then(() => out);
 };
 
-// Write Full TTS output to file.
+/**
+ * Generate speech audio from super long text through machine (via ["Google TTS"], ["ffmpeg"]).
+ * @param {string} out output audio file.
+ * @param {string} txt input text.
+ * @param {object} o options.
+ * @returns promise <out>.
+ */
 async function googletts(out, txt, o) {
   var o = _.merge({}, OPTIONS, o);
   var l = o.log, c = o.credentials;
@@ -183,6 +189,7 @@ async function console(A) {
     if(A[i]==='--help') return cp.execSync('less README.md', {cwd: __dirname, stdio: [0, 1, 2]});
     else if(A[i]==='-o' || A[i]==='--output') out = A[++i];
     else if(A[i]==='-t' || A[i]==='--text') txt = fs.readFileSync(A[++i], 'utf8');
+    else if(A[i]==='-l' || A[i]==='--log') Object.assign(o, {log: true});
     else if(A[i]==='-c' || A[i]==='--credentials') Object.assign(o, {credentials: {keyFilename: A[++i]}});
     else if(A[i]==='-aa' || A[i]==='--audio_acodec') Object.assign(o, {audio: {acodec: A[++i]}});
     else if(A[i]==='-vlc' || A[i]==='--voice_languagecode') Object.assign(o, {voice: {languageCode: A[++i]}});
