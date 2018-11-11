@@ -12,6 +12,10 @@ const fs = require('fs');
 
 // Global variables
 const E = process.env;
+const CP = {
+  sync: true,
+  stdio: [0, 1, 2]
+};
 const OPTIONS = {
   log: boolean(E['GOOGLETTS_LOG']||'0'),
   credentials: {
@@ -19,7 +23,7 @@ const OPTIONS = {
   },
   audio: {
     acodec: E['GOOGLETTS_AUDIO_ACODEC']||'copy',
-    cp: {sync: true, stdio: [0, 1, 2]}
+    cp: null
   },
   voice: {
     name: null,
@@ -70,7 +74,7 @@ function fsWriteFile(pth, dat, o) {
 
 // Execute child process, return promise.
 function cpExec(cmd, o) {
-  if(o.sync) return Promise.resolve({stdout: cp.execSync(cmd, o)});
+  if(o && o.sync) return Promise.resolve({stdout: cp.execSync(cmd, o)});
   return new Promise((fres, frej) => {
     cp.exec(cmd, o, (err, stdout, stderr) => {
       if(err) frej(err);
@@ -114,7 +118,7 @@ function textSsmlBlock(txt, o) {
 };
 
 // Write TTS audio to file.
-function audioWrite(out, ssml, tts, o) {
+function audiosWrite(out, ssml, tts, o) {
   var l = o.log, v = o.voice;
   if(!v.name) v.name = VOICE_NAME;
   else v.languageCode = v.name.substring(0, 5);
@@ -124,7 +128,7 @@ function audioWrite(out, ssml, tts, o) {
     tts.synthesizeSpeech(req, (err, res) => {
       if(err) return frej(err);
       fs.writeFile(out, res.audioContent, 'binary', (err) => {
-        if(l) console.log('audioWrite:', out);
+        if(l) console.log('audiosWrite:', out);
         if(err) return frej(err);
         fres(out);
       });
@@ -152,10 +156,10 @@ function outputAudios(out, ssmls, tts, o) {
 
 // Generate output audio file.
 function outputAudio(out, auds, o) {
-  var l = o.log, a = o.audio, 
-  var cmd = `ffmpeg -y -i "concat:${auds.join('|')}" -acodec ${o.acodec} "${out}"`;
-  if(l) { console.log('outputAudio:', out, auds.length); console.log('-cp:', cmd); }
-  return cpExec(cmd, Object.assign()).then(() => out);
+  var l = o.log, a = o.audio;
+  var cmd = `ffmpeg -y -i "concat:${auds.join('|')}" -acodec ${a.acodec} "${out}"`;
+  if(l) { console.log('outputAudio:', out, auds.length); console.log('-cpExec:', cmd); }
+  return cpExec(cmd, l? Object.assign({}, a.cp, CP):a.cp).then(() => out);
 };
 
 /**
@@ -181,8 +185,8 @@ async function googletts(out, txt, o) {
 };
 module.exports = googletts;
 
-// Run on console.
-async function console(A) {
+// Run on shell.
+async function shell(A) {
   var txt = await getStdin();
   var out = 'out.mp3', o = {};
   for(var i=2, I=A.length; i<I; i++) {
@@ -209,4 +213,4 @@ async function console(A) {
   }
   await googletts(out, txt, o);
 };
-if(require.main===module) console(process.argv);
+if(require.main===module) shell(process.argv);
