@@ -30,8 +30,8 @@ googletts -t speech.txt -o speech.mp3
 googletts "Hello 911, my husband is in danger!" -vsg FEMALE
 # out.mp3 created with female voice
 
-echo "Dead man walking." | googletts -vn en-US-Wavenet-B
-# out.mp3 created with different male voice
+echo "Dead man walking." | googletts --log -vn en-US-Wavenet-B
+# out.mp3 created with different male voice (log enabled)
 ```
 > Available [TTS voices]?
 
@@ -43,6 +43,7 @@ googletts [options] <text>
 # --help: show this help
 # -o, --output: set output audio file (out.mp3)
 # -t, --text:   set input text file
+# -l, --log:    enable log
 # -c, --credentials:   set google credentials path
 # -aa, --audio_acodec: set output audio acodec (copy)
 # -vlc, --voice_languagecode: set voice language code (en-US)
@@ -99,9 +100,10 @@ await googletts('out.mp3', 'Hello 911, my husband is in danger!', {
 // out.mp3 created with female voice
 
 await googletts('out.mp3', 'Dead man walking.', {
+  log: true,
   audios: {voice: {name: 'en-US-Wavenet-B'}}
 });
-// out.mp3 created with different male voice
+// out.mp3 created with different male voice (log enabled)
 ```
 
 ### reference
@@ -110,9 +112,9 @@ await googletts('out.mp3', 'Dead man walking.', {
 const googletts = require('extra-googletts');
 
 googletts(output, text, options={})
-// output:  output file
+// output:  output audio file
 // text:    input text
-// options: optional
+// options: given below
 // -> Promise <output>
 
 // Default options:
@@ -123,10 +125,7 @@ options = {
   },
   audio: {
     acodec: 'copy',    // set output audio acodec
-    cp: {
-      sync: true,      // enable synchronous child process
-      stdio: [0, 1, 2] // set child process stdio
-    }
+    cp: null           // child process options (sync, stdio)
   },
   voice: {
     languageCode: 'en-US',   // set voice language code
