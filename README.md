@@ -9,9 +9,6 @@ Generate speech audio from super long text through machine (via ["Google TTS"], 
 
 Sample: ["I want to order a stuffed crust pizza"](https://clyp.it/kje2yfdk).
 <br>
-["Google TTS"]: https://cloud.google.com/text-to-speech/
-["ffmpeg"]: https://ffmpeg.org
-[Upload Wikipedia TTS videos on YouTube]: https://www.youtube.com/results?search_query=wikipedia+audio+article
 
 
 ## setup
@@ -19,8 +16,6 @@ Sample: ["I want to order a stuffed crust pizza"](https://clyp.it/kje2yfdk).
 1. [Enable API] for Google Cloud Text-to-Speech API.
 2. [Setup authentication] with a service account.
 <br>
-[Enable API]: https://console.cloud.google.com/flows/enableapi?apiid=texttospeech.googleapis.com
-[Setup authentication]: https://cloud.google.com/docs/authentication/getting-started
 
 
 ## console
@@ -172,13 +167,21 @@ Do you need anything similar?
 
 Suggestions are welcome. Please [create an issue].
 <br>
-[extra-stillvideo]: https://www.npmjs.com/package/extra-stillvideo
-[extra-youtubeuploader]: https://www.npmjs.com/package/extra-youtubeuploader
-[create an issue]: https://github.com/nodef/extra-googletts/issues
 
 
 [![nodef](https://i.imgur.com/LPVfMny.jpg)](https://nodef.github.io)
 > References: [SSML], [TTS voices], [TTS client docs].
+
+["Google TTS"]: https://cloud.google.com/text-to-speech/
+["ffmpeg"]: https://ffmpeg.org
+[Upload Wikipedia TTS videos on YouTube]: https://www.youtube.com/results?search_query=wikipedia+audio+article
+
+[Enable API]: https://console.cloud.google.com/flows/enableapi?apiid=texttospeech.googleapis.com
+[Setup authentication]: https://cloud.google.com/docs/authentication/getting-started
+
+[extra-stillvideo]: https://www.npmjs.com/package/extra-stillvideo
+[extra-youtubeuploader]: https://www.npmjs.com/package/extra-youtubeuploader
+[create an issue]: https://github.com/nodef/extra-googletts/issues
 
 [SSML]: https://developers.google.com/actions/reference/ssml
 [TTS voices]: https://cloud.google.com/text-to-speech/docs/voices
