@@ -30,7 +30,7 @@ googletts -t speech.txt -o speech.mp3
 googletts "Hello 911, my husband is in danger!" -vsg FEMALE
 # out.mp3 created with female voice
 
-googletts "Dead man walking." -vn en-US-Wavenet-B
+echo "Dead man walking." | googletts -vn en-US-Wavenet-B
 # out.mp3 created with different male voice
 ```
 > Available [TTS voices]?

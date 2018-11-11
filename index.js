@@ -12,10 +12,8 @@ const fs = require('fs');
 // Global variables
 const E = process.env;
 const LOG = boolean(E['GOOGLETTS_LOG']||'0');
-const OUTPUT = {
-  text: boolean(E['GOOGLETTS_OUTPUT_TEXT']||'0'),
-  ssmls: boolean(E['GOOGLETTS_OUTPUT_SSMLS']||'0'),
-  audios: boolean(E['GOOGLETTS_OUTPUT_AUDIOS']||'0')
+const CREDENTIALS = {
+  keyFilename: E['GOOGLE_APPLICATION_CREDENTIALS']
 };
 const AUDIO = {
   acodec: E['GOOGLETTS_AUDIO_ACODEC']||'copy'
@@ -24,34 +22,33 @@ const CP = {
   sync: true,
   stdio: [0, 1, 2]
 };
-const AUDIOS_VOICE = {
+const VOICE = {
+  name: E['GOOGLETTS_AUDIOS_VOICE_NAME']||'en-US-Wavenet-D',
   languageCode: E['GOOGLETTS_AUDIOS_VOICE_LANGUAGECODE']||'en-US',
   ssmlGender: E['GOOGLETTS_AUDIOS_VOICE_SSMLGENDER']||'NEUTRAL'
 };
-const AUDIOS_VOICE_NAME = E['GOOGLETTS_AUDIOS_VOICE_NAME']||'en-US-Wavenet-D';
-const SSMLS_QUOTE = {
-  breakTime: parseFloat(E['GOOGLETTS_SSMLS_QUOTE_BREAKTIME']||'250'),
-  emphasisLevel: E['GOOGLETTS_SSMLS_QUOTE_EMPHASISLEVEL']||'moderate'
+const QUOTE = {
+  breakTime: parseFloat(E['GOOGLETTS_QUOTE_BREAKTIME']||'250'),
+  emphasisLevel: E['GOOGLETTS_QUOTE_EMPHASISLEVEL']||'moderate'
 };
-const SSMLS_HEADING = {
-  breakTime: parseFloat(E['GOOGLETTS_SSMLS_HEADING_BREAKTIME']||'4000'),
-  breakDiff: parseFloat(E['GOOGLETTS_SSMLS_HEADING_BREAKDIFF']||'250'),
-  emphasisLevel: parseFloat(E['GOOGLETTS_SSMLS_HEADING_EMPHASISLEVEL']||'strong'),
+const HEADING = {
+  breakTime: parseFloat(E['GOOGLETTS_HEADING_BREAKTIME']||'4000'),
+  breakDiff: parseFloat(E['GOOGLETTS_HEADING_BREAKDIFF']||'250'),
+  emphasisLevel: parseFloat(E['GOOGLETTS_HEADING_EMPHASISLEVEL']||'strong'),
 };
-const SSMLS_ELLIPSIS = {
-  breakTime: parseFloat(E['GOOGLETTS_SSMLS_ELLIPSIS_BREAKTIME']||'1500')
+const ELLIPSIS = {
+  breakTime: parseFloat(E['GOOGLETTS_ELLIPSIS_BREAKTIME']||'1500')
 };
-const SSMLS_DASH = {
-  breakTime: parseFloat(E['GOOGLETTS_SSMLS_DASH_BREAKTIME']||'500')
+const DASH = {
+  breakTime: parseFloat(E['GOOGLETTS_DASH_BREAKTIME']||'500')
 };
-const SSMLS_NEWLINE = {
-  breakTime: parseFloat(E['GOOGLETTS_SSMLS_NEWLINE_BREAKTIME']||'1000')
+const NEWLINE = {
+  breakTime: parseFloat(E['GOOGLETTS_NEWLINE_BREAKTIME']||'1000')
 };
-const SSMLS_BLOCK = {
-  length: parseFloat(E['GOOGLETTS_SSMLS_BLOCK_LENGTH']||'5000'),
-  separator: E['GOOGLETTS_SSMLS_BLOCK_SEPARATOR']||'.'
+const BLOCK = {
+  length: parseFloat(E['GOOGLETTS_BLOCK_LENGTH']||'5000'),
+  separator: E['GOOGLETTS_BLOCK_SEPARATOR']||'.'
 };
-const GOOGLE = E['GOOGLE_APPLICATION_CREDENTIALS'];
 const FN_NOP = () => 0;
 
 
@@ -204,25 +201,22 @@ async function console(A) {
   for(var i=2, I=A.length; i<I; i++) {
     if(A[i]==='--help') return cp.execSync('less README.md', {cwd: __dirname, stdio: [0, 1, 2]});
     else if(A[i]==='-o' || A[i]==='--output') out = A[++i];
-    else if(A[i]==='-i' || A[i]==='--input') txt = fs.readFileSync(A[++i], 'utf8');
-    else if(A[i]==='-c' || A[i]==='--credentials') Object.assign(o, {tts: A[++i]});
-    else if(A[i]==='-ot' || A[i]==='--output_text') Object.assign(o, {output: {text: true}});
-    else if(A[i]==='-os' || A[i]==='--output_ssmls') Object.assign(o, {output: {ssmls: true}});
-    else if(A[i]==='-oa' || A[i]==='--output_audios') Object.assign(o, {output: {audios: true}});
+    else if(A[i]==='-t' || A[i]==='--text') txt = fs.readFileSync(A[++i], 'utf8');
+    else if(A[i]==='-c' || A[i]==='--credentials') Object.assign(o, {credentials: {keyFilename: A[++i]}});
     else if(A[i]==='-aa' || A[i]==='--audio_acodec') Object.assign(o, {audio: {acodec: A[++i]}});
-    else if(A[i]==='-vlc' || A[i]==='--voice_languagecode') Object.assign(o, {audios: {voice: {languageCode: A[++i]}}});
-    else if(A[i]==='-vsg' || A[i]==='--voice_ssmlgender') Object.assign(o, {audios: {voice: {ssmlGender: A[++i]}}});
-    else if(A[i]==='-vn' || A[i]==='--voice_name') Object.assign(o, {audios: {voice: {name: A[++i]}}});
-    else if(A[i]==='-qbt' || A[i]==='--quote_breaktime') Object.assign(o, {ssmls: {quote: {breakTime: parseFloat(A[++i])}}});
-    else if(A[i]==='-qel' || A[i]==='--quote_emphasislevel') Object.assign(o, {ssmls: {quote: {emphasisLevel: A[++i]}}});
-    else if(A[i]==='-hbt' || A[i]==='--heading_breaktime') Object.assign(o, {ssmls: {heading: {breakTime: parseFloat(A[++i])}}});
-    else if(A[i]==='-hbd' || A[i]==='--heading_breakdiff') Object.assign(o, {ssmls: {heading: {breakDiff: parseFloat(A[++i])}}});
-    else if(A[i]==='-hel' || A[i]==='--heading_emphasislevel') Object.assign(o, {ssmls: {heading: {emphasisLevel: A[++i]}}});
-    else if(A[i]==='-ebt' || A[i]==='--ellipsis_breaktime') Object.assign(o, {ssmls: {ellipsis: {breakTime: parseFloat(A[++i])}}});
-    else if(A[i]==='-dbt' || A[i]==='--dash_breaktime') Object.assign(o, {ssmls: {dash: {breakTime: parseFloat(A[++i])}}});
-    else if(A[i]==='-nbt' || A[i]==='--newline_breaktime') Object.assign(o, {ssmls: {newline: {breakTime: parseFloat(A[++i])}}});
-    else if(A[i]==='-bl' || A[i]==='--block_length') Object.assign(o, {ssmls: {block: {length: parseInt(A[++i], 10)}}});
-    else if(A[i]==='-bs' || A[i]==='--block_separator') Object.assign(o, {ssmls: {block: {separator: A[++i]}}});
+    else if(A[i]==='-vlc' || A[i]==='--voice_languagecode') Object.assign(o, {voice: {languageCode: A[++i]}});
+    else if(A[i]==='-vsg' || A[i]==='--voice_ssmlgender') Object.assign(o, {voice: {ssmlGender: A[++i]}});
+    else if(A[i]==='-vn' || A[i]==='--voice_name') Object.assign(o, {voice: {name: A[++i]}});
+    else if(A[i]==='-qbt' || A[i]==='--quote_breaktime') Object.assign(o, {quote: {breakTime: parseFloat(A[++i])}});
+    else if(A[i]==='-qel' || A[i]==='--quote_emphasislevel') Object.assign(o, {quote: {emphasisLevel: A[++i]}});
+    else if(A[i]==='-hbt' || A[i]==='--heading_breaktime') Object.assign(o, {heading: {breakTime: parseFloat(A[++i])}});
+    else if(A[i]==='-hbd' || A[i]==='--heading_breakdiff') Object.assign(o, {heading: {breakDiff: parseFloat(A[++i])}});
+    else if(A[i]==='-hel' || A[i]==='--heading_emphasislevel') Object.assign(o, {heading: {emphasisLevel: A[++i]}});
+    else if(A[i]==='-ebt' || A[i]==='--ellipsis_breaktime') Object.assign(o, {ellipsis: {breakTime: parseFloat(A[++i])}});
+    else if(A[i]==='-dbt' || A[i]==='--dash_breaktime') Object.assign(o, {dash: {breakTime: parseFloat(A[++i])}});
+    else if(A[i]==='-nbt' || A[i]==='--newline_breaktime') Object.assign(o, {newline: {breakTime: parseFloat(A[++i])}});
+    else if(A[i]==='-bl' || A[i]==='--block_length') Object.assign(o, {block: {length: parseInt(A[++i], 10)}});
+    else if(A[i]==='-bs' || A[i]==='--block_separator') Object.assign(o, {block: {separator: A[++i]}});
     else txt = A[i];
   }
   await googletts(out, txt, o);
