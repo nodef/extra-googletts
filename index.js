@@ -121,6 +121,17 @@ function textSsmlBlock(txt, o) {
   return [ssml, txt.substring(i)];
 };
 
+// Get voice config from options.
+function voiceConfig(o)  {
+  var n = o.name;
+  var lc = n? n:(o.languageCode||VOICE.languageCode);
+  lc = lc.substring(0, 2).toLowerCase()+'-';
+  lc += lc.length>=5? lc.substring(3, 5).toUpperCase():'US';
+  var sg = (o.ssmlGender||VOICE.ssmlGender).toUpperCase();
+  if(lc===VOICE.languageCode && sg===VOICE.ssmlGender) n = n||VOICE.name;
+  return {name: n, languageCode: lc, ssmlGender: sg};
+};
+
 // Write TTS audio to file.
 function audiosWrite(out, ssml, tts, o) {
   var l = o.log, v = o.voice;
@@ -149,14 +160,8 @@ function outputSsmls(txt, o) {
 
 // Generate output audio part files.
 function outputAudios(out, ssmls, tts, o) {
-  var l = o.log, v = o.voice;
-  if(l) console.log('outputAudios:', out, ssmls.length);
-  if(v.name) v.languageCode = v.name.substring(5);
-  v.languageCode = v.languageCode||VOICE_LANGUAGECODE;
-  v.ssmlGender = v.ssmlGender||VOICE_SSMLGENDER;
-  if(v.languageCode===VOICE_LANGUAGECODE && v.ssmlGender===VOICE_SSMLGENDER) {
-    v.name = v.name||VOICE_NAME;
-  }
+  o.voice = voiceConfig(o.voice);
+  if(o.log) console.log('outputAudios:', out, ssmls.length);
   var pth = pathFilename(out), ext = path.extname(out);
   for(var i=0, I=ssmls.length, z=[]; i<I; i++)
     z[i] = audiosWrite(`${pth}.${i}${ext}`, ssmls[i], tts, o);
