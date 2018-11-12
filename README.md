@@ -13,8 +13,10 @@ Sample: ["I want to order a stuffed crust pizza"](https://clyp.it/kje2yfdk).
 
 ## setup
 
-1. [Enable API] for Google Cloud Text-to-Speech API.
-2. [Setup authentication] with a service account.
+1. Install [Node.js], if not installed.
+2. Run `npm install -g extra-googletts` in [console].
+3. [Enable API] for Google Cloud Text-to-Speech API.
+4. [Setup authentication] with a service account.
 <br>
 
 
@@ -176,6 +178,9 @@ Suggestions are welcome. Please [create an issue].
 ["ffmpeg"]: https://ffmpeg.org
 [Upload Wikipedia TTS videos on YouTube]: https://www.youtube.com/results?search_query=wikipedia+audio+article
 
+
+[Node.js]: https://nodejs.org/en/download/
+[console]: https://en.wikipedia.org/wiki/Shell_(computing)#Text_(CLI)_shells
 [Enable API]: https://console.cloud.google.com/flows/enableapi?apiid=texttospeech.googleapis.com
 [Setup authentication]: https://cloud.google.com/docs/authentication/getting-started
 
