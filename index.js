@@ -26,9 +26,9 @@ const OPTIONS = {
     cp: null
   },
   voice: {
-    name: null,
-    languageCode: E['GOOGLETTS_VOICE_LANGUAGECODE']||'en-US',
-    ssmlGender: E['GOOGLETTS_VOICE_SSMLGENDER']||'NEUTRAL'
+    name:  E['GOOGLETTS_VOICE_NAME'],
+    languageCode: E['GOOGLETTS_VOICE_LANGUAGECODE'],
+    ssmlGender: E['GOOGLETTS_VOICE_SSMLGENDER']
   },
   quote: {
     breakTime: parseFloat(E['GOOGLETTS_QUOTE_BREAKTIME']||'250'),
@@ -53,7 +53,11 @@ const OPTIONS = {
     separator: E['GOOGLETTS_BLOCK_SEPARATOR']||'.'
   },
 };
-const VOICE_NAME = E['GOOGLETTS_VOICE_NAME']||'en-US-Wavenet-D';
+const VOICE = {
+  name: 'en-US-Wavenet-D',
+  languageCode: 'en-US',
+  ssmlGender: 'NEUTRAL'
+};
 const FN_NOP = () => 0;
 
 
@@ -92,9 +96,9 @@ function textSsml(txt, o) {
     return brk+emp+brk;
   });
   txt = txt.replace(/(=+)\s(.*?)\s\1/g, (m, p1, p2) => {
-    var brk = `<break time="${h.breakTime-p1.length*h.breakDiff}ms"/>Topic `;
+    var brk = `<break time="${h.breakTime-p1.length*h.breakDiff}ms"/>`;
     var emp = `<emphasis level="${h.emphasisLevel}">${p2}</emphasis>`;
-    return brk+emp+brk;
+    return brk+'Topic '+emp+brk;
   });
   // txt = txt.replace(/\((.*?)\)/gm, '<emphasis level="reduced">($1)</emphasis>');
   // txt = txt.replace(/\[(.*?)\]/gm, '<emphasis level="reduced">[$1]</emphasis>');
@@ -120,8 +124,6 @@ function textSsmlBlock(txt, o) {
 // Write TTS audio to file.
 function audiosWrite(out, ssml, tts, o) {
   var l = o.log, v = o.voice;
-  if(!v.name) v.name = VOICE_NAME;
-  else v.languageCode = v.name.substring(0, 5);
   var enc = path.extname(out).substring(1).toUpperCase();
   var req = {input: {ssml}, voice: v, audioConfig: {audioEncoding: enc}};
   return new Promise((fres, frej) => {
@@ -147,7 +149,14 @@ function outputSsmls(txt, o) {
 
 // Generate output audio part files.
 function outputAudios(out, ssmls, tts, o) {
-  if(o.log) console.log('outputAudios:', out, ssmls.length);
+  var l = o.log, v = o.voice;
+  if(l) console.log('outputAudios:', out, ssmls.length);
+  if(v.name) v.languageCode = v.name.substring(5);
+  v.languageCode = v.languageCode||VOICE_LANGUAGECODE;
+  v.ssmlGender = v.ssmlGender||VOICE_SSMLGENDER;
+  if(v.languageCode===VOICE_LANGUAGECODE && v.ssmlGender===VOICE_SSMLGENDER) {
+    v.name = v.name||VOICE_NAME;
+  }
   var pth = pathFilename(out), ext = path.extname(out);
   for(var i=0, I=ssmls.length, z=[]; i<I; i++)
     z[i] = audiosWrite(`${pth}.${i}${ext}`, ssmls[i], tts, o);
