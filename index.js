@@ -12,10 +12,7 @@ const fs = require('fs');
 
 // Global variables
 const E = process.env;
-const CP = {
-  sync: true,
-  stdio: [0, 1, 2]
-};
+const STDIO = [0, 1, 2];
 const OPTIONS = {
   log: boolean(E['GOOGLETTS_LOG']||'0'),
   credentials: {
@@ -66,13 +63,12 @@ function pathFilename(pth) {
 
 // Execute child process, return promise.
 function cpExec(cmd, o) {
-  if(o && o.sync) return Promise.resolve({stdout: cp.execSync(cmd, o)});
-  return new Promise((fres, frej) => {
-    cp.exec(cmd, o, (err, stdout, stderr) => {
-      if(err) frej(err);
-      else fres({stdout, stderr});
-    });
-  });
+  var o = o||{}, stdio = o.log || o.stdio==null? STDIO:o.stdio;
+  if(o.log) console.log('-cpExec:', cmd);
+  if(stdio===STDIO) return Promise.resolve({stdout: cp.execSync(cmd, {stdio})});
+  return new Promise((fres, frej) => cp.exec(cmd, {stdio}, (err, stdout, stderr) => {
+    return err? frej(err):fres({stdout, stderr});
+  }));
 };
 
 // Get SSML from text.
@@ -129,7 +125,7 @@ function audiosWrite(out, ssml, tts, o) {
     tts.synthesizeSpeech(req, (err, res) => {
       if(err) return frej(err);
       fs.writeFile(out, res.audioContent, 'binary', (err) => {
-        if(l) console.log('audiosWrite:', out);
+        if(l) console.log('-audiosWrite:', out);
         if(err) return frej(err);
         fres(out);
       });
@@ -149,7 +145,7 @@ function outputSsmls(txt, o) {
 // Generate output audio part files.
 function outputAudios(out, ssmls, tts, o) {
   o.voice = voiceConfig(o.voice);
-  if(o.log) console.log('outputAudios:', out, ssmls.length);
+  if(o.log) console.log('-outputAudios:', out, ssmls.length);
   var pth = pathFilename(out), ext = path.extname(out);
   for(var i=0, I=ssmls.length, z=[]; i<I; i++)
     z[i] = audiosWrite(`${pth}.${i}${ext}`, ssmls[i], tts, o);
@@ -158,9 +154,8 @@ function outputAudios(out, ssmls, tts, o) {
 
 // Generate output audio file.
 function outputAudio(out, auds, o) {
-  var l = o.log, cmd = `ffmpeg -y -i "concat:${auds.join('|')}" -acodec ${o.acodec} "${out}"`;
-  if(l) { console.log('outputAudio:', out, auds.length); console.log('-cpExec:', cmd); }
-  return cpExec(cmd, l? Object.assign({}, o.cp, CP):o.cp).then(() => out);
+  if(o.log) console.log('-outputAudio:', out, auds.length);
+  return cpExec(`ffmpeg -y -i "concat:${auds.join('|')}" -acodec ${o.acodec} "${out}"`, o);
 };
 
 /**
@@ -171,12 +166,11 @@ function outputAudio(out, auds, o) {
  * @returns promise <out>.
  */
 async function googletts(out, txt, o) {
-  var o = _.merge({}, OPTIONS, o);
-  var l = o.log, c = o.credentials;
-  if(l) console.log('@googletts:', out, txt);
+  var o = _.merge({}, OPTIONS, o), c = o.credentials;
+  if(o.log) console.log('@googletts:', out, txt);
   if(c.keyFilename) c.keyFilename = randomItem(c.keyFilename.split(';'));
   var tts = new textToSpeech.TextToSpeechClient(c);
-  var pth = pathFilename(out), ext = path.extname(out);
+  var ext = path.extname(out);
   var aud = tempy.file({extension: ext.substring(1)});
   var ssmls = outputSsmls('\n'+txt, o);
   var auds = await outputAudios(aud, ssmls, tts, o);

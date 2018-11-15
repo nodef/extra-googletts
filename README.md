@@ -106,8 +106,7 @@ await googletts('out.mp3', 'Hello 911, my husband is in danger!', {
 // out.mp3 created with female voice
 
 await googletts('out.mp3', 'Dead man walking.', {
-  log: true,
-  voice: {name: 'en-US-Wavenet-B'}
+  voice: {name: 'en-US-Wavenet-B'}, log: true
 });
 // out.mp3 created with different male voice (log enabled)
 ```
@@ -125,12 +124,13 @@ googletts(output, text, options={})
 
 // Default options:
 options = {
-  log: false, // enable log
+  stdio: [0, 1, 2], // set child process stdio
+  log: false,       // enable log
   credentials: {
-    // See TTS client options (below)
+    keyFilename: '' // path to credentials
+    // see other TTS client options below
   },
   acodec: 'copy',    // set audio acodec
-  cp: null,          // child process options (sync, stdio)
   voice: {
     languageCode: 'en-US',   // set voice language code
     ssmlGender: 'NEUTRAL'    // set voice SSML gender
