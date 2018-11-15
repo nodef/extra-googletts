@@ -19,12 +19,10 @@ const CP = {
 const OPTIONS = {
   log: boolean(E['GOOGLETTS_LOG']||'0'),
   credentials: {
-    keyFilename: E['GOOGLE_APPLICATION_CREDENTIALS']
+    keyFilename: E['GOOGLETTS_CREDENTIALS']||E['GOOGLE_APPLICATION_CREDENTIALS']
   },
-  audio: {
-    acodec: E['GOOGLETTS_AUDIO_ACODEC']||'copy',
-    cp: null
-  },
+  acodec: E['GOOGLETTS_AUDIO_ACODEC']||'copy',
+  cp: null,
   voice: {
     name:  E['GOOGLETTS_VOICE_NAME'],
     languageCode: E['GOOGLETTS_VOICE_LANGUAGECODE'],
@@ -64,16 +62,6 @@ const FN_NOP = () => 0;
 // Get filename, without extension.
 function pathFilename(pth) {
   return pth.substring(0, pth.length-path.extname(pth).length);
-};
-
-// Write to file, return promise.
-function fsWriteFile(pth, dat, o) {
-  return new Promise((fres, frej) => {
-    fs.writeFile(pth, dat, o, (err) => {
-      if(err) frej(err);
-      else fres(pth);
-    });
-  });
 };
 
 // Execute child process, return promise.
@@ -170,10 +158,9 @@ function outputAudios(out, ssmls, tts, o) {
 
 // Generate output audio file.
 function outputAudio(out, auds, o) {
-  var l = o.log, a = o.audio;
-  var cmd = `ffmpeg -y -i "concat:${auds.join('|')}" -acodec ${a.acodec} "${out}"`;
+  var l = o.log, cmd = `ffmpeg -y -i "concat:${auds.join('|')}" -acodec ${o.acodec} "${out}"`;
   if(l) { console.log('outputAudio:', out, auds.length); console.log('-cpExec:', cmd); }
-  return cpExec(cmd, l? Object.assign({}, a.cp, CP):a.cp).then(() => out);
+  return cpExec(cmd, l? Object.assign({}, o.cp, CP):o.cp).then(() => out);
 };
 
 /**
@@ -207,22 +194,22 @@ async function shell(A) {
     if(A[i]==='--help') return cp.execSync('less README.md', {cwd: __dirname, stdio: [0, 1, 2]});
     else if(A[i]==='-o' || A[i]==='--output') out = A[++i];
     else if(A[i]==='-t' || A[i]==='--text') txt = fs.readFileSync(A[++i], 'utf8');
-    else if(A[i]==='-l' || A[i]==='--log') Object.assign(o, {log: true});
-    else if(A[i]==='-c' || A[i]==='--credentials') Object.assign(o, {credentials: {keyFilename: A[++i]}});
-    else if(A[i]==='-aa' || A[i]==='--audio_acodec') Object.assign(o, {audio: {acodec: A[++i]}});
-    else if(A[i]==='-vlc' || A[i]==='--voice_languagecode') Object.assign(o, {voice: {languageCode: A[++i]}});
-    else if(A[i]==='-vsg' || A[i]==='--voice_ssmlgender') Object.assign(o, {voice: {ssmlGender: A[++i]}});
-    else if(A[i]==='-vn' || A[i]==='--voice_name') Object.assign(o, {voice: {name: A[++i]}});
-    else if(A[i]==='-qbt' || A[i]==='--quote_breaktime') Object.assign(o, {quote: {breakTime: parseFloat(A[++i])}});
-    else if(A[i]==='-qel' || A[i]==='--quote_emphasislevel') Object.assign(o, {quote: {emphasisLevel: A[++i]}});
-    else if(A[i]==='-hbt' || A[i]==='--heading_breaktime') Object.assign(o, {heading: {breakTime: parseFloat(A[++i])}});
-    else if(A[i]==='-hbd' || A[i]==='--heading_breakdiff') Object.assign(o, {heading: {breakDiff: parseFloat(A[++i])}});
-    else if(A[i]==='-hel' || A[i]==='--heading_emphasislevel') Object.assign(o, {heading: {emphasisLevel: A[++i]}});
-    else if(A[i]==='-ebt' || A[i]==='--ellipsis_breaktime') Object.assign(o, {ellipsis: {breakTime: parseFloat(A[++i])}});
-    else if(A[i]==='-dbt' || A[i]==='--dash_breaktime') Object.assign(o, {dash: {breakTime: parseFloat(A[++i])}});
-    else if(A[i]==='-nbt' || A[i]==='--newline_breaktime') Object.assign(o, {newline: {breakTime: parseFloat(A[++i])}});
-    else if(A[i]==='-bl' || A[i]==='--block_length') Object.assign(o, {block: {length: parseInt(A[++i], 10)}});
-    else if(A[i]==='-bs' || A[i]==='--block_separator') Object.assign(o, {block: {separator: A[++i]}});
+    else if(A[i]==='-l' || A[i]==='--log') _.merge(o, {log: true});
+    else if(A[i]==='-c' || A[i]==='--credentials') _.merge(o, {credentials: {keyFilename: A[++i]}});
+    else if(A[i]==='-oa' || A[i]==='--acodec') _.merge(o, {acodec: A[++i]});
+    else if(A[i]==='-vlc' || A[i]==='--voice_languagecode') _.merge(o, {voice: {languageCode: A[++i]}});
+    else if(A[i]==='-vsg' || A[i]==='--voice_ssmlgender') _.merge(o, {voice: {ssmlGender: A[++i]}});
+    else if(A[i]==='-vn' || A[i]==='--voice_name') _.merge(o, {voice: {name: A[++i]}});
+    else if(A[i]==='-qbt' || A[i]==='--quote_breaktime') _.merge(o, {quote: {breakTime: parseFloat(A[++i])}});
+    else if(A[i]==='-qel' || A[i]==='--quote_emphasislevel') _.merge(o, {quote: {emphasisLevel: A[++i]}});
+    else if(A[i]==='-hbt' || A[i]==='--heading_breaktime') _.merge(o, {heading: {breakTime: parseFloat(A[++i])}});
+    else if(A[i]==='-hbd' || A[i]==='--heading_breakdiff') _.merge(o, {heading: {breakDiff: parseFloat(A[++i])}});
+    else if(A[i]==='-hel' || A[i]==='--heading_emphasislevel') _.merge(o, {heading: {emphasisLevel: A[++i]}});
+    else if(A[i]==='-ebt' || A[i]==='--ellipsis_breaktime') _.merge(o, {ellipsis: {breakTime: parseFloat(A[++i])}});
+    else if(A[i]==='-dbt' || A[i]==='--dash_breaktime') _.merge(o, {dash: {breakTime: parseFloat(A[++i])}});
+    else if(A[i]==='-nbt' || A[i]==='--newline_breaktime') _.merge(o, {newline: {breakTime: parseFloat(A[++i])}});
+    else if(A[i]==='-bl' || A[i]==='--block_length') _.merge(o, {block: {length: parseInt(A[++i], 10)}});
+    else if(A[i]==='-bs' || A[i]==='--block_separator') _.merge(o, {block: {separator: A[++i]}});
     else txt = A[i];
   }
   await googletts(out, txt, o);

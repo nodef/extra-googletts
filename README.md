@@ -15,8 +15,9 @@ Sample: ["I want to order a stuffed crust pizza"](https://clyp.it/kje2yfdk).
 
 1. Install [Node.js], if not installed.
 2. Run `npm install -g extra-googletts` in [console].
-3. [Enable API] for Google Cloud Text-to-Speech API.
-4. [Setup authentication] with a service account.
+3. To install this as a package use `npm install extra-googletts`.
+4. [Enable API] for Google Cloud Text-to-Speech API.
+5. [Setup authentication] with a service account.
 <br>
 
 
@@ -46,8 +47,8 @@ googletts [options] <text>
 # -o, --output: set output audio file (out.mp3)
 # -t, --text:   set input text file
 # -l, --log:    enable log
-# -c, --credentials:   set google credentials path
-# -aa, --audio_acodec: set output audio acodec (copy)
+# -c, --credentials: set google credentials path
+# -oa, --acodec:     set acodec (copy)
 # -vlc, --voice_languagecode: set voice language code (en-US)
 # -vsg, --voice_ssmlgender:   set voice SSML gender (NEUTRAL)
 # -vn, --voice_name:          set voice name (en-US-Wavenet-D)
@@ -64,8 +65,11 @@ googletts [options] <text>
 
 # Environment variables:
 $GOOGLETTS_LOG # enable log (0)
+$GOOGLETTS_OUTPUT # set output audio file (out.mp3)
+$GOOGLETTS_TEXT   # set input text file
 $GOOGLE_APPLICATION_CREDENTIALS # set google credentials path
-$GOOGLETTS_AUDIO_ACODEC        # set output audio acodec (copy)
+$GOOGLETTS_CREDENTIALS          # set google credentials path
+$GOOGLETTS_ACODEC               # set audio acodec (copy)
 $GOOGLETTS_VOICE_LANGUAGECODE  # set voice language code (en-US)
 $GOOGLETTS_VOICE_SSMLGENDER    # set voice SSML gender (NEUTRAL)
 $GOOGLETTS_VOICE_NAME          # set voice name (en-US-Wavenet-D)
@@ -97,13 +101,13 @@ await googletts('speech.mp3', speech)
 // speech.mp3 created from text in speech.txt
 
 await googletts('out.mp3', 'Hello 911, my husband is in danger!', {
-  audios: {voice: {ssmlGender: 'FEMALE'}}
+  voice: {ssmlGender: 'FEMALE'}
 });
 // out.mp3 created with female voice
 
 await googletts('out.mp3', 'Dead man walking.', {
   log: true,
-  audios: {voice: {name: 'en-US-Wavenet-B'}}
+  voice: {name: 'en-US-Wavenet-B'}
 });
 // out.mp3 created with different male voice (log enabled)
 ```
@@ -125,10 +129,8 @@ options = {
   credentials: {
     // See TTS client options (below)
   },
-  audio: {
-    acodec: 'copy',    // set output audio acodec
-    cp: null           // child process options (sync, stdio)
-  },
+  acodec: 'copy',    // set audio acodec
+  cp: null,          // child process options (sync, stdio)
   voice: {
     languageCode: 'en-US',   // set voice language code
     ssmlGender: 'NEUTRAL'    // set voice SSML gender
@@ -164,11 +166,11 @@ options = {
 ## similar
 
 Do you need anything similar?
-- [extra-stillvideo] can generate video from audio and image.
 - [extra-youtubeuploader] can upload videos with caption to YouTube.
+- [extra-stillvideo] can generate video from audio and image.
 
 Suggestions are welcome. Please [create an issue].
-<br>
+<br><br>
 
 
 [![nodef](https://i.imgur.com/LPVfMny.jpg)](https://nodef.github.io)
