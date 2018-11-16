@@ -43,44 +43,44 @@ echo "Dead man walking." | googletts --log -vn en-US-Wavenet-B
 
 ```bash
 googletts [options] <text>
-# --help: show this help
+# --help:       show this help
+# -l, --log:    enable log
 # -o, --output: set output audio file (out.mp3)
 # -t, --text:   set input text file
-# -l, --log:    enable log
 # -c, --credentials: set google credentials path
 # -oa, --acodec:     set acodec (copy)
-# -vlc, --voice_languagecode: set voice language code (en-US)
-# -vsg, --voice_ssmlgender:   set voice SSML gender (NEUTRAL)
-# -vn, --voice_name:          set voice name (en-US-Wavenet-D)
-# -qbt, --quote_breaktime:     set quoted text break time (250)
-# -qel, --quote_emphasislevel: set quoted text emphasis level (moderate)
+# -vlc, --voice_languagecode:    set voice language code (en-US)
+# -vsg, --voice_ssmlgender:      set voice SSML gender (NEUTRAL)
+# -vn, --voice_name:             set voice name (en-US-Wavenet-D)
+# -qbt, --quote_breaktime:       set quoted text break time (250)
+# -qel, --quote_emphasislevel:   set quoted text emphasis level (moderate)
 # -hbt, --heading_breaktime:     set heading text break time (4000)
 # -hbd, --heading_breakdiff:     set heading text break difference (250)
 # -hel, --heading_emphasislevel: set heading text emphasis level (strong)
-# -ebt, --ellipsis_breaktime: set ellipsis break time (1500)
-# -dbt, --dash_breaktime:     set dash break time (500)
-# -nbt, --newline_breaktime:  set newline break time (1000)
+# -ebt, --ellipsis_breaktime:    set ellipsis break time (1500)
+# -dbt, --dash_breaktime:        set dash break time (500)
+# -nbt, --newline_breaktime:     set newline break time (1000)
 # -bl, --block_length:    set SSMLs block length (5000)
 # -bs, --block_separator: set SSMLs block separator (.)
 
 # Environment variables:
-$GOOGLETTS_LOG # enable log (0)
+$GOOGLETTS_LOG    # enable log (0)
 $GOOGLETTS_OUTPUT # set output audio file (out.mp3)
 $GOOGLETTS_TEXT   # set input text file
-$GOOGLE_APPLICATION_CREDENTIALS # set google credentials path
-$GOOGLETTS_CREDENTIALS          # set google credentials path
-$GOOGLETTS_ACODEC               # set audio acodec (copy)
-$GOOGLETTS_VOICE_LANGUAGECODE  # set voice language code (en-US)
-$GOOGLETTS_VOICE_SSMLGENDER    # set voice SSML gender (NEUTRAL)
-$GOOGLETTS_VOICE_NAME          # set voice name (en-US-Wavenet-D)
-$GOOGLETTS_QUOTE_BREAKTIME     # set quoted text break time (250)
-$GOOGLETTS_QUOTE_EMPHASISLEVEL # set quoted text emphasis level (moderate)
+$GOOGLE_APPLICATION_CREDENTIALS  # set google credentials path
+$GOOGLETTS_CREDENTIALS           # set google credentials path
+$GOOGLETTS_ACODEC                # set audio acodec (copy)
+$GOOGLETTS_VOICE_LANGUAGECODE    # set voice language code (en-US)
+$GOOGLETTS_VOICE_SSMLGENDER      # set voice SSML gender (NEUTRAL)
+$GOOGLETTS_VOICE_NAME            # set voice name (en-US-Wavenet-D)
+$GOOGLETTS_QUOTE_BREAKTIME       # set quoted text break time (250)
+$GOOGLETTS_QUOTE_EMPHASISLEVEL   # set quoted text emphasis level (moderate)
 $GOOGLETTS_HEADING_BREAKTIME     # set heading text break time (4000)
 $GOOGLETTS_HEADING_BREAKDIFF     # set heading text break difference (250)
 $GOOGLETTS_HEADING_EMPHASISLEVEL # set heading text emphasis level (strong)
-$GOOGLETTS_ELLIPSIS_BREAKTIME # set ellipsis break time (1500)
-$GOOGLETTS_DASH_BREAKTIME     # set dash break time (500)
-$GOOGLETTS_NEWLINE_BREAKTIME  # set newline break time (1000)
+$GOOGLETTS_ELLIPSIS_BREAKTIME    # set ellipsis break time (1500)
+$GOOGLETTS_DASH_BREAKTIME        # set dash break time (500)
+$GOOGLETTS_NEWLINE_BREAKTIME     # set newline break time (1000)
 $GOOGLETTS_BLOCK_LENGTH    # set SSMLs block length (5000)
 $GOOGLETTS_BLOCK_SEPARATOR # set SSMLs block separator (.)
 ```
