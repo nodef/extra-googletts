@@ -14,12 +14,15 @@ const fs = require('fs');
 const E = process.env;
 const STDIO = [0, 1, 2];
 const OPTIONS = {
+  stdio: null,
+  help: false,
   log: boolean(E['GOOGLETTS_LOG']||'0'),
+  output: E['GOOGLETTS_OUTPUT']||'out.mp3',
+  text: E['GOOGLETTS_TEXT'],
   credentials: {
     keyFilename: E['GOOGLETTS_CREDENTIALS']||E['GOOGLE_APPLICATION_CREDENTIALS']
   },
   acodec: E['GOOGLETTS_AUDIO_ACODEC']||'copy',
-  cp: null,
   voice: {
     name:  E['GOOGLETTS_VOICE_NAME'],
     languageCode: E['GOOGLETTS_VOICE_LANGUAGECODE'],
@@ -61,11 +64,18 @@ function pathFilename(pth) {
   return pth.substring(0, pth.length-path.extname(pth).length);
 };
 
+// Read file, return promise.
+function fsReadFile(pth, o) {
+  return new Promise((fres, frej) => fs.readFile(pth, o, (err, data) => {
+    return err? frej(err):fres(data);
+  }));
+};
+
 // Execute child process, return promise.
 function cpExec(cmd, o) {
-  var o = o||{}, stdio = o.log || o.stdio==null? STDIO:o.stdio;
+  var o = o||{}, stdio = o.log? o.stdio||STDIO:o.stdio||[];
   if(o.log) console.log('-cpExec:', cmd);
-  if(stdio===STDIO) return Promise.resolve({stdout: cp.execSync(cmd, {stdio})});
+  if(o.stdio==null) return Promise.resolve({stdout: cp.execSync(cmd, {stdio})});
   return new Promise((fres, frej) => cp.exec(cmd, {stdio}, (err, stdout, stderr) => {
     return err? frej(err):fres({stdout, stderr});
   }));
@@ -166,7 +176,9 @@ function outputAudio(out, auds, o) {
  * @returns promise <out>.
  */
 async function googletts(out, txt, o) {
-  var o = _.merge({}, OPTIONS, o), c = o.credentials;
+  var o = _.merge({}, OPTIONS, o);
+  var out = out||o.output, c = o.credentials
+  var txt = txt||o.input||(o.text? await fsReadFile(o.text, 'utf8'):null);
   if(o.log) console.log('@googletts:', out, txt);
   if(c.keyFilename) c.keyFilename = randomItem(c.keyFilename.split(';'));
   var tts = new textToSpeech.TextToSpeechClient(c);
@@ -178,34 +190,40 @@ async function googletts(out, txt, o) {
   for(var f of auds) fs.unlink(f, FN_NOP);
   return out;
 };
+
+// Get options from arguments.
+function options(a, z={}) {
+  for(var i=2, I=a.length; i<I; i++) {
+    if(a[i]==='--help') z.help = true;
+    else if(a[i]==='-o' || a[i]==='--output') z.output= a[++i];
+    else if(a[i]==='-t' || a[i]==='--text') z.text = a[++i];
+    else if(a[i]==='-l' || a[i]==='--log') z.log = true;
+    else if(a[i]==='-c' || a[i]==='--credentials') _.set(z, 'credentials.keyFilename', a[++i]);
+    else if(a[i]==='-oa' || a[i]==='--acodec') _.set(z, 'acodec', a[++i]);
+    else if(a[i]==='-vlc' || a[i]==='--voice_languagecode') _.set(z, 'voice.languageCode', a[++i]);
+    else if(a[i]==='-vsg' || a[i]==='--voice_ssmlgender') _.set(z, 'voice.ssmlGender', a[++i]);
+    else if(a[i]==='-vn' || a[i]==='--voice_name') _.set(z, 'voice.name', a[++i]);
+    else if(a[i]==='-qbt' || a[i]==='--quote_breaktime') _.set(z, 'quote.breakTime', parseFloat(a[++i]));
+    else if(a[i]==='-qel' || a[i]==='--quote_emphasislevel') _.set(z, 'quote.emphasisLevel', a[++i]);
+    else if(a[i]==='-hbt' || a[i]==='--heading_breaktime') _.set(z, 'heading.breakTime', parseFloat(a[++i]));
+    else if(a[i]==='-hbd' || a[i]==='--heading_breakdiff') _.set(z, 'heading.breakDiff', parseFloat(a[++i]));
+    else if(a[i]==='-hel' || a[i]==='--heading_emphasislevel') _.set(z, 'heading.emphasisLevel', a[++i]);
+    else if(a[i]==='-ebt' || a[i]==='--ellipsis_breaktime') _.set(z, 'ellipsis.breakTime', parseFloat(a[++i]));
+    else if(a[i]==='-dbt' || a[i]==='--dash_breaktime') _.set(z, 'dash.breakTime', parseFloat(a[++i]));
+    else if(a[i]==='-nbt' || a[i]==='--newline_breaktime') _.set(z, 'newline.breakTime', parseFloat(a[++i]));
+    else if(a[i]==='-bl' || a[i]==='--block_length') _.set(z, 'block.length', parseInt(a[++i], 10));
+    else if(a[i]==='-bs' || a[i]==='--block_separator') _.set(z, 'block.separator', a[++i]);
+    else z.input = a[i];
+  }
+  return z;
+};
+googletts.options = options;
 module.exports = googletts;
 
 // Run on shell.
-async function shell(A) {
-  var txt = await getStdin();
-  var out = 'out.mp3', o = {};
-  for(var i=2, I=A.length; i<I; i++) {
-    if(A[i]==='--help') return cp.execSync('less README.md', {cwd: __dirname, stdio: [0, 1, 2]});
-    else if(A[i]==='-o' || A[i]==='--output') out = A[++i];
-    else if(A[i]==='-t' || A[i]==='--text') txt = fs.readFileSync(A[++i], 'utf8');
-    else if(A[i]==='-l' || A[i]==='--log') _.merge(o, {log: true});
-    else if(A[i]==='-c' || A[i]==='--credentials') _.merge(o, {credentials: {keyFilename: A[++i]}});
-    else if(A[i]==='-oa' || A[i]==='--acodec') _.merge(o, {acodec: A[++i]});
-    else if(A[i]==='-vlc' || A[i]==='--voice_languagecode') _.merge(o, {voice: {languageCode: A[++i]}});
-    else if(A[i]==='-vsg' || A[i]==='--voice_ssmlgender') _.merge(o, {voice: {ssmlGender: A[++i]}});
-    else if(A[i]==='-vn' || A[i]==='--voice_name') _.merge(o, {voice: {name: A[++i]}});
-    else if(A[i]==='-qbt' || A[i]==='--quote_breaktime') _.merge(o, {quote: {breakTime: parseFloat(A[++i])}});
-    else if(A[i]==='-qel' || A[i]==='--quote_emphasislevel') _.merge(o, {quote: {emphasisLevel: A[++i]}});
-    else if(A[i]==='-hbt' || A[i]==='--heading_breaktime') _.merge(o, {heading: {breakTime: parseFloat(A[++i])}});
-    else if(A[i]==='-hbd' || A[i]==='--heading_breakdiff') _.merge(o, {heading: {breakDiff: parseFloat(A[++i])}});
-    else if(A[i]==='-hel' || A[i]==='--heading_emphasislevel') _.merge(o, {heading: {emphasisLevel: A[++i]}});
-    else if(A[i]==='-ebt' || A[i]==='--ellipsis_breaktime') _.merge(o, {ellipsis: {breakTime: parseFloat(A[++i])}});
-    else if(A[i]==='-dbt' || A[i]==='--dash_breaktime') _.merge(o, {dash: {breakTime: parseFloat(A[++i])}});
-    else if(A[i]==='-nbt' || A[i]==='--newline_breaktime') _.merge(o, {newline: {breakTime: parseFloat(A[++i])}});
-    else if(A[i]==='-bl' || A[i]==='--block_length') _.merge(o, {block: {length: parseInt(A[++i], 10)}});
-    else if(A[i]==='-bs' || A[i]==='--block_separator') _.merge(o, {block: {separator: A[++i]}});
-    else txt = A[i];
-  }
-  await googletts(out, txt, o);
+async function shell(a) {
+  var o = options(a, {input: await getStdin()});
+  if(o.help) return cp.execSync('less README.md', {cwd: __dirname, stdio: STDIO});
+  return await googletts(null, null, o);
 };
 if(require.main===module) shell(process.argv);
