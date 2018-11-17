@@ -84,9 +84,9 @@ function cpExec(cmd, o) {
 // Get SSML from text.
 function textSsml(txt, o) {
   var q = o.quote, h = o.heading, e = o.ellipsis, d = o.dash, n = o.newline;
-  txt = txt.replace(/([\'\"])(.*?)\1/gm, (m, p1, p2) => {
+  txt = txt.replace(/\"(.*?)\"/gm, (m, p1) => {
     var brk = `<break time="${q.breakTime}ms"/>`;
-    var emp = `<emphasis level="${q.emphasisLevel}">${p1}${p2}${p1}</emphasis>`;
+    var emp = `<emphasis level="${q.emphasisLevel}">"${p1}"</emphasis>`;
     return brk+emp+brk;
   });
   txt = txt.replace(/(=+)\s(.*?)\s\1/g, (m, p1, p2) => {
