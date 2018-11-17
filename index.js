@@ -192,37 +192,37 @@ async function googletts(out, txt, o) {
 };
 
 // Get options from arguments.
-function options(a, z={}) {
-  for(var i=2, I=a.length; i<I; i++) {
-    if(a[i]==='--help') z.help = true;
-    else if(a[i]==='-o' || a[i]==='--output') z.output= a[++i];
-    else if(a[i]==='-t' || a[i]==='--text') z.text = a[++i];
-    else if(a[i]==='-l' || a[i]==='--log') z.log = true;
-    else if(a[i]==='-c' || a[i]==='--credentials') _.set(z, 'credentials.keyFilename', a[++i]);
-    else if(a[i]==='-oa' || a[i]==='--acodec') _.set(z, 'acodec', a[++i]);
-    else if(a[i]==='-vlc' || a[i]==='--voice_languagecode') _.set(z, 'voice.languageCode', a[++i]);
-    else if(a[i]==='-vsg' || a[i]==='--voice_ssmlgender') _.set(z, 'voice.ssmlGender', a[++i]);
-    else if(a[i]==='-vn' || a[i]==='--voice_name') _.set(z, 'voice.name', a[++i]);
-    else if(a[i]==='-qbt' || a[i]==='--quote_breaktime') _.set(z, 'quote.breakTime', parseFloat(a[++i]));
-    else if(a[i]==='-qel' || a[i]==='--quote_emphasislevel') _.set(z, 'quote.emphasisLevel', a[++i]);
-    else if(a[i]==='-hbt' || a[i]==='--heading_breaktime') _.set(z, 'heading.breakTime', parseFloat(a[++i]));
-    else if(a[i]==='-hbd' || a[i]==='--heading_breakdiff') _.set(z, 'heading.breakDiff', parseFloat(a[++i]));
-    else if(a[i]==='-hel' || a[i]==='--heading_emphasislevel') _.set(z, 'heading.emphasisLevel', a[++i]);
-    else if(a[i]==='-ebt' || a[i]==='--ellipsis_breaktime') _.set(z, 'ellipsis.breakTime', parseFloat(a[++i]));
-    else if(a[i]==='-dbt' || a[i]==='--dash_breaktime') _.set(z, 'dash.breakTime', parseFloat(a[++i]));
-    else if(a[i]==='-nbt' || a[i]==='--newline_breaktime') _.set(z, 'newline.breakTime', parseFloat(a[++i]));
-    else if(a[i]==='-bl' || a[i]==='--block_length') _.set(z, 'block.length', parseInt(a[++i], 10));
-    else if(a[i]==='-bs' || a[i]==='--block_separator') _.set(z, 'block.separator', a[++i]);
-    else z.input = a[i];
-  }
-  return z;
+function options(o, k, a, i) {
+  if(k==='--help') o.help = true;
+  else if(k==='-o' || k==='--output') o.output= a[++i];
+  else if(k==='-t' || k==='--text') o.text = a[++i];
+  else if(k==='-l' || k==='--log') o.log = true;
+  else if(k==='-c' || k==='--credentials') _.set(o, 'credentials.keyFilename', a[++i]);
+  else if(k==='-oa' || k==='--acodec') _.set(o, 'acodec', a[++i]);
+  else if(k==='-vlc' || k==='--voice_languagecode') _.set(o, 'voice.languageCode', a[++i]);
+  else if(k==='-vsg' || k==='--voice_ssmlgender') _.set(o, 'voice.ssmlGender', a[++i]);
+  else if(k==='-vn' || k==='--voice_name') _.set(o, 'voice.name', a[++i]);
+  else if(k==='-qbt' || k==='--quote_breaktime') _.set(o, 'quote.breakTime', parseFloat(a[++i]));
+  else if(k==='-qel' || k==='--quote_emphasislevel') _.set(o, 'quote.emphasisLevel', a[++i]);
+  else if(k==='-hbt' || k==='--heading_breaktime') _.set(o, 'heading.breakTime', parseFloat(a[++i]));
+  else if(k==='-hbd' || k==='--heading_breakdiff') _.set(o, 'heading.breakDiff', parseFloat(a[++i]));
+  else if(k==='-hel' || k==='--heading_emphasislevel') _.set(o, 'heading.emphasisLevel', a[++i]);
+  else if(k==='-ebt' || k==='--ellipsis_breaktime') _.set(o, 'ellipsis.breakTime', parseFloat(a[++i]));
+  else if(k==='-dbt' || k==='--dash_breaktime') _.set(o, 'dash.breakTime', parseFloat(a[++i]));
+  else if(k==='-nbt' || k==='--newline_breaktime') _.set(o, 'newline.breakTime', parseFloat(a[++i]));
+  else if(k==='-bl' || k==='--block_length') _.set(o, 'block.length', parseInt(a[++i], 10));
+  else if(k==='-bs' || k==='--block_separator') _.set(o, 'block.separator', a[++i]);
+  else o.input = a[i];
+  return i+1;
 };
 googletts.options = options;
 module.exports = googletts;
 
 // Run on shell.
 async function shell(a) {
-  var o = options(a, {input: await getStdin()});
+  var o = {input: await getStdin()};
+  for(var i=0, I=a.length; i<I;)
+    i = options(o, a[i], a, i);
   if(o.help) return cp.execSync('less README.md', {cwd: __dirname, stdio: STDIO});
   return await googletts(null, null, o);
 };
