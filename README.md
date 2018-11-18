@@ -35,16 +35,20 @@ Sample: ["I want to order a stuffed crust pizza"](https://clyp.it/kje2yfdk).
 12. Key type: `JSON`.
 13. Select `Continue`.
 14. Copy downloaded file to a directory.
-15. Rename the file to `service_account.json`.
-16. Set environment variable `GOOGLE_APPLICATION_CREDENTIALS` to its path.
+15. Rename the file to `account_id.json`.
+
+### set environment variable
+
+1. Copy path of `account_id.json`.
+2. Set environment variable `GOOGLE_APPLICATION_CREDENTIALS` to it.
 > On Windows, use [RapidEE] to set environment variable.
 
 ```bash
 # on linux or macos console
-export GOOGLE_APPLICATION_CREDENTIALS="[PATH]"
+export GOOGLE_APPLICATION_CREDENTIALS="[PATH OF account_id.json]"
 
 # on windows powershell
-$env:GOOGLE_APPLICATION_CREDENTIALS="[PATH]"
+$env:GOOGLE_APPLICATION_CREDENTIALS="[PATH OF account_id.json]"
 ```
 <br>
 
