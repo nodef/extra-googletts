@@ -19,13 +19,7 @@ Sample: ["I want to order a stuffed crust pizza"](https://clyp.it/kje2yfdk).
 2. Run `npm install -g extra-googletts` in [console].
 3. To install this as a package use `npm install extra-googletts`.
 
-### get client
-
-[account]: https://accounts.google.com/signup
-[Google Cloud Platform]: https://console.developers.google.com/
-[new project]: https://console.cloud.google.com/projectcreate
-[Cloud Text-to-Speech API]: https://console.cloud.google.com/apis/library/texttospeech.googleapis.com
-[credentials]: https://console.cloud.google.com/apis/credentials/wizard
+### get service account key
 
 1. Create an [account] on [Google Cloud Platform].
 2. Create a [new project], and select it.
@@ -40,9 +34,18 @@ Sample: ["I want to order a stuffed crust pizza"](https://clyp.it/kje2yfdk).
 11. Service account ID: `googletts` (same as name).
 12. Key type: `JSON`.
 13. Select `Continue`.
-14. Copy downloaded file  to a directory.
-4. [Enable API] for Google Cloud Text-to-Speech API.
-5. [Setup authentication] with a service account.
+14. Copy downloaded file to a directory.
+15. Rename the file to `service_account.json`.
+16. Set environment variable `GOOGLE_APPLICATION_CREDENTIALS` to its path.
+> On Windows, use [RapidEE] to set environment variable.
+
+```bash
+# on linux or macos console
+export GOOGLE_APPLICATION_CREDENTIALS="[PATH]"
+
+# on windows powershell
+$env:GOOGLE_APPLICATION_CREDENTIALS="[PATH]"
+```
 <br>
 
 
@@ -205,11 +208,17 @@ Suggestions are welcome. Please [create an issue].
 ["ffmpeg"]: https://ffmpeg.org
 [Upload Wikipedia TTS videos on YouTube]: https://www.youtube.com/results?search_query=wikipedia+audio+article
 
-
 [Node.js]: https://nodejs.org/en/download/
 [console]: https://en.wikipedia.org/wiki/Shell_(computing)#Text_(CLI)_shells
 [Enable API]: https://console.cloud.google.com/flows/enableapi?apiid=texttospeech.googleapis.com
 [Setup authentication]: https://cloud.google.com/docs/authentication/getting-started
+
+[account]: https://accounts.google.com/signup
+[Google Cloud Platform]: https://console.developers.google.com/
+[new project]: https://console.cloud.google.com/projectcreate
+[Cloud Text-to-Speech API]: https://console.cloud.google.com/apis/library/texttospeech.googleapis.com
+[credentials]: https://console.cloud.google.com/apis/credentials/wizard
+[RapidEE]: https://www.rapidee.com/en/about
 
 [extra-stillvideo]: https://www.npmjs.com/package/extra-stillvideo
 [extra-youtubeuploader]: https://www.npmjs.com/package/extra-youtubeuploader
