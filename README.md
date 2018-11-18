@@ -13,9 +13,34 @@ Sample: ["I want to order a stuffed crust pizza"](https://clyp.it/kje2yfdk).
 
 ## setup
 
+### install
+
 1. Install [Node.js], if not installed.
 2. Run `npm install -g extra-googletts` in [console].
 3. To install this as a package use `npm install extra-googletts`.
+
+### get client
+
+[account]: https://accounts.google.com/signup
+[Google Cloud Platform]: https://console.developers.google.com/
+[new project]: https://console.cloud.google.com/projectcreate
+[Cloud Text-to-Speech API]: https://console.cloud.google.com/apis/library/texttospeech.googleapis.com
+[credentials]: https://console.cloud.google.com/apis/credentials/wizard
+
+1. Create an [account] on [Google Cloud Platform].
+2. Create a [new project], and select it.
+3. Enable [Cloud Text-to-Speech API] for the project.
+4. Add [credentials] to your project.
+5. Which API are you using? `Cloud Text-to-Speech API`.
+6. Are you planning to use this API with App Engine or Compute Engine? `No, I’m not using them`.
+7. Select `What credentials do I need`?.
+8. Create a service account.
+9. Service account name: `googletts` (your choice).
+10. Role: `Project -> Owner`.
+11. Service account ID: `googletts` (same as name).
+12. Key type: `JSON`.
+13. Select `Continue`.
+14. Copy downloaded file  to a directory.
 4. [Enable API] for Google Cloud Text-to-Speech API.
 5. [Setup authentication] with a service account.
 <br>
