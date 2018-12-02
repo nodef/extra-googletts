@@ -23,6 +23,7 @@ const OPTIONS = {
   credentials: {
     keyFilename: E['GOOGLETTS_CREDENTIALS']||E['GOOGLE_APPLICATION_CREDENTIALS']
   },
+  retries: parseInt(E['GOOGLETTS_RETRIES']||'3', 10),
   acodec: E['GOOGLETTS_AUDIO_ACODEC']||'copy',
   voice: {
     name:  E['GOOGLETTS_VOICE_NAME'],
@@ -36,7 +37,7 @@ const OPTIONS = {
   heading: {
     breakTime: parseFloat(E['GOOGLETTS_HEADING_BREAKTIME']||'4000'),
     breakDiff: parseFloat(E['GOOGLETTS_HEADING_BREAKDIFF']||'250'),
-    emphasisLevel: parseFloat(E['GOOGLETTS_HEADING_EMPHASISLEVEL']||'strong'),
+    emphasisLevel: E['GOOGLETTS_HEADING_EMPHASISLEVEL']||'strong',
   },
   ellipsis: {
     breakTime: parseFloat(E['GOOGLETTS_ELLIPSIS_BREAKTIME']||'1500')
@@ -163,6 +164,15 @@ function audiosWrite(out, ssml, tts, o) {
   });
 };
 
+// Write TTS audio to file, with retries.
+async function audiosRetryWrite(out, ssml, tts, o) {
+  for(var i=0; i<o.retries; i++) {
+    try { return await audiosWrite(out, ssml, tts, o); }
+    catch(e) {}
+  }
+  throw e;
+};
+
 // Generate output SSML parts.
 function outputSsmls(txt, o) {
   for(var i=0, z=[]; txt; i++) {
@@ -178,7 +188,7 @@ function outputAudios(out, ssmls, tts, o) {
   if(o.log) console.log('-outputAudios:', out, ssmls.length);
   var pth = pathFilename(out), ext = path.extname(out);
   for(var i=0, I=ssmls.length, z=[]; i<I; i++)
-    z[i] = audiosWrite(`${pth}.${i}${ext}`, ssmls[i], tts, o);
+    z[i] = audiosRetryWrite(`${pth}.${i}${ext}`, ssmls[i], tts, o);
   return Promise.all(z);
 };
 
@@ -227,6 +237,7 @@ async function googletts(out, txt, o) {
       t += durs[j++];
   }
   for(var f of auds) fs.unlink(f, FN_NOP);
+  if(o.log) console.log(' .timetable:', tt);
   return tt;
 };
 
@@ -260,9 +271,12 @@ module.exports = googletts;
 // Run on shell.
 async function shell(a) {
   var o = {input: await getStdin()};
-  for(var i=0, I=a.length; i<I;)
+  for(var i=2, I=a.length; i<I;)
     i = options(o, a[i], a, i);
   if(o.help) return cp.execSync('less README.md', {cwd: __dirname, stdio: STDIO});
-  return await googletts(null, null, o);
+  var tt = await googletts(null, null, o);
+  if(o.log || OPTIONS.log) return;
+  for(var t of tt)
+    if(t.title) console.log(t.time+' '+t.title);
 };
 if(require.main===module) shell(process.argv);
