@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 const textToSpeech = require('@google-cloud/text-to-speech');
+const musicMetadata = require('music-metadata');
 const randomItem = require('random-item');
 const getStdin = require('get-stdin');
 const boolean = require('boolean');
@@ -59,6 +60,14 @@ const VOICE = {
 const FN_NOP = () => 0;
 
 
+// Format time in HH:MM:SS format.
+function timeFormat(t) {
+  var hh = Math.floor(t/3600).toString().padStart(2, '0');
+  var mm = Math.floor((t%3600)/60).toString().padStart(2, '0');
+  var ss = Math.floor(t%60).toString().padStart(2, '0');
+  return `${hh}:${mm}:${ss}`;
+};
+
 // Get filename, without extension.
 function pathFilename(pth) {
   return pth.substring(0, pth.length-path.extname(pth).length);
@@ -115,6 +124,17 @@ function textSsmlBlock(txt, o) {
   return [ssml, txt.substring(i)];
 };
 
+// Get sections for text.
+function textSections(txt) {
+  var re = /(=+)\s+(.*?)\s+\1/g;
+  for(var i=0, title=null, top=null, secs=[]; (top=re.exec(txt))!=null;) {
+    secs.push({title, content: txt.substring(i, top.index)});
+    i = top.index; title = top[2];
+  }
+  secs.push({title, content: txt.substring(i)});
+  return secs;
+};
+
 // Get voice config from options.
 function voiceConfig(o)  {
   var n = o.name;
@@ -162,6 +182,14 @@ function outputAudios(out, ssmls, tts, o) {
   return Promise.all(z);
 };
 
+// Get durations of audio part files.
+function outputDurations(auds) {
+  var durs = [];
+  for(var aud of auds)
+    durs.push(musicMetadata.parseFile(aud).then(m => m.format.duration));
+  return Promise.all(durs);
+};
+
 // Generate output audio file.
 function outputAudio(out, auds, o) {
   if(o.log) console.log('-outputAudio:', out, auds.length);
@@ -184,11 +212,22 @@ async function googletts(out, txt, o) {
   var tts = new textToSpeech.TextToSpeechClient(c);
   var ext = path.extname(out);
   var aud = tempy.file({extension: ext.substring(1)});
-  var ssmls = outputSsmls('\n'+txt, o);
+  var secs = textSections('\n'+txt), prts = [], ssmls = [];
+  for(var sec of secs) {
+    var secSsmls = outputSsmls(sec.content, o);
+    prts.push(secSsmls.length);
+    Array.prototype.push.apply(ssmls, secSsmls);
+  }
   var auds = await outputAudios(aud, ssmls, tts, o);
   out = await outputAudio(out, auds, o);
+  var durs = await outputDurations(auds);
+  for(var i=0, j=0, t=0, tt=[], I=secs.length; i<I; i++) {
+    tt[i] = {title: secs[i].title, time: timeFormat(t)};
+    for(var p=0; p<prts[i]; p++)
+      t += durs[j++];
+  }
   for(var f of auds) fs.unlink(f, FN_NOP);
-  return out;
+  return tt;
 };
 
 // Get options from arguments.
