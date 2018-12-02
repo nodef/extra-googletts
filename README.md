@@ -75,10 +75,11 @@ echo "Dead man walking." | googletts --log -vn en-US-Wavenet-B
 
 ```bash
 googletts [options] <text>
-# --help:       show this help
-# -l, --log:    enable log
-# -o, --output: set output audio file (out.mp3)
-# -t, --text:   set input text file
+# --help:        show this help
+# -l, --log:     enable log
+# -o, --output:  set output audio file (out.mp3)
+# -t, --text:    set input text file
+# -r, --retries: set speech synthesis retries (3)
 # -c, --credentials: set google credentials path
 # -oa, --acodec:     set acodec (copy)
 # -vlc, --voice_languagecode:    set voice language code (en-US)
@@ -96,9 +97,10 @@ googletts [options] <text>
 # -bs, --block_separator: set SSMLs block separator (.)
 
 # Environment variables:
-$GOOGLETTS_LOG    # enable log (0)
-$GOOGLETTS_OUTPUT # set output audio file (out.mp3)
-$GOOGLETTS_TEXT   # set input text file
+$GOOGLETTS_LOG     # enable log (0)
+$GOOGLETTS_OUTPUT  # set output audio file (out.mp3)
+$GOOGLETTS_TEXT    # set input text file
+$GOOGLETTS_RETRIES # set speech synthesis retries (3)
 $GOOGLE_APPLICATION_CREDENTIALS  # set google credentials path
 $GOOGLETTS_CREDENTIALS           # set google credentials path
 $GOOGLETTS_ACODEC                # set audio acodec (copy)
@@ -152,12 +154,13 @@ googletts(output, text, options={})
 // output:  output audio file
 // text:    input text
 // options: given below
-// -> Promise <output>
+// -> Promise <topic timetable>
 
 // Default options:
 options = {
   stdio: [0, 1, 2], // set child process stdio
   log: false,       // enable log
+  retries: 3,       // set speech synthesis retries
   credentials: {
     keyFilename: '' // path to credentials
     // see other TTS client options below

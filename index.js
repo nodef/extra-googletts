@@ -20,10 +20,10 @@ const OPTIONS = {
   log: boolean(E['GOOGLETTS_LOG']||'0'),
   output: E['GOOGLETTS_OUTPUT']||'out.mp3',
   text: E['GOOGLETTS_TEXT'],
+  retries: parseInt(E['GOOGLETTS_RETRIES']||'3', 10),
   credentials: {
     keyFilename: E['GOOGLETTS_CREDENTIALS']||E['GOOGLE_APPLICATION_CREDENTIALS']
   },
-  retries: parseInt(E['GOOGLETTS_RETRIES']||'3', 10),
   acodec: E['GOOGLETTS_AUDIO_ACODEC']||'copy',
   voice: {
     name:  E['GOOGLETTS_VOICE_NAME'],
@@ -247,6 +247,7 @@ function options(o, k, a, i) {
   else if(k==='-o' || k==='--output') o.output= a[++i];
   else if(k==='-t' || k==='--text') o.text = a[++i];
   else if(k==='-l' || k==='--log') o.log = true;
+  else if(k==='-r' || k==='--retries') o.retries = parseInt(a[++i], 10);
   else if(k==='-c' || k==='--credentials') _.set(o, 'credentials.keyFilename', a[++i]);
   else if(k==='-oa' || k==='--acodec') _.set(o, 'acodec', a[++i]);
   else if(k==='-vlc' || k==='--voice_languagecode') _.set(o, 'voice.languageCode', a[++i]);
