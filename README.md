@@ -79,7 +79,7 @@ googletts [options] <text>
 # -l, --log:     enable log
 # -o, --output:  set output audio file (out.mp3)
 # -t, --text:    set input text file
-# -r, --retries: set speech synthesis retries (3)
+# -r, --retries: set speech synthesis retries (8)
 # -c, --credentials: set google credentials path
 # -oa, --acodec:     set acodec (copy)
 # -vlc, --voice_languagecode:    set voice language code (en-US)
@@ -100,7 +100,7 @@ googletts [options] <text>
 $GOOGLETTS_LOG     # enable log (0)
 $GOOGLETTS_OUTPUT  # set output audio file (out.mp3)
 $GOOGLETTS_TEXT    # set input text file
-$GOOGLETTS_RETRIES # set speech synthesis retries (3)
+$GOOGLETTS_RETRIES # set speech synthesis retries (8)
 $GOOGLE_APPLICATION_CREDENTIALS  # set google credentials path
 $GOOGLETTS_CREDENTIALS           # set google credentials path
 $GOOGLETTS_ACODEC                # set audio acodec (copy)
@@ -160,7 +160,7 @@ googletts(output, text, options={})
 options = {
   stdio: [0, 1, 2], // set child process stdio
   log: false,       // enable log
-  retries: 3,       // set speech synthesis retries
+  retries: 8,       // set speech synthesis retries
   credentials: {
     keyFilename: '' // path to credentials
     // see other TTS client options below

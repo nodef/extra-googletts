@@ -20,7 +20,7 @@ const OPTIONS = {
   log: boolean(E['GOOGLETTS_LOG']||'0'),
   output: E['GOOGLETTS_OUTPUT']||'out.mp3',
   text: E['GOOGLETTS_TEXT'],
-  retries: parseInt(E['GOOGLETTS_RETRIES']||'3', 10),
+  retries: parseInt(E['GOOGLETTS_RETRIES']||'8', 10),
   credentials: {
     keyFilename: E['GOOGLETTS_CREDENTIALS']||E['GOOGLE_APPLICATION_CREDENTIALS']
   },
@@ -166,11 +166,12 @@ function audiosWrite(out, ssml, tts, o) {
 
 // Write TTS audio to file, with retries.
 async function audiosRetryWrite(out, ssml, tts, o) {
+  var err = null;
   for(var i=0; i<o.retries; i++) {
     try { return await audiosWrite(out, ssml, tts, o); }
-    catch(e) {}
+    catch(e) { err = e; }
   }
-  throw e;
+  throw err;
 };
 
 // Generate output SSML parts.
