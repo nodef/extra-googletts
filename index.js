@@ -81,6 +81,13 @@ function fsReadFile(pth, o) {
   }));
 };
 
+// Write file, return promise.
+function fsWriteFile(pth, dat, o) {
+  return new Promise((fres, frej) => fs.writeFile(pth, dat, o, (err) => {
+    return err? frej(err):fres();
+  }));
+};
+
 // Execute child process, return promise.
 function cpExec(cmd, o) {
   var o = o||{}, stdio = o.log? o.stdio||STDIO:o.stdio||[];
@@ -202,9 +209,15 @@ function outputDurations(auds) {
 };
 
 // Generate output audio file.
-function outputAudio(out, auds, o) {
+async function outputAudio(out, auds, o) {
   if(o.log) console.log('-outputAudio:', out, auds.length);
-  return cpExec(`ffmpeg -y -i "concat:${auds.join('|')}" -acodec ${o.acodec} "${out}"`, o);
+  var lst = tempy.file({extension: 'txt'}), dat = '';
+  for(var aud of auds)
+    dat += `file '${aud}'\n`;
+  await fsWriteFile(lst, dat);
+  var z = await cpExec(`ffmpeg -y -safe 0 -f concat -i "${lst}" -acodec ${o.acodec} "${out}"`, o);
+  fs.unlink(lst, FN_NOP);
+  return z;
 };
 
 /**
