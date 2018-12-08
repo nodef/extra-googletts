@@ -75,6 +75,9 @@ echo "Dead man walking." | googletts --log -vn en-US-Wavenet-B
 
 ```bash
 googletts [options] <text>
+# text: input text
+
+# Options:
 # --help:        show this help
 # -l, --log:     enable log
 # -o, --output:  set output audio file (out.mp3)
