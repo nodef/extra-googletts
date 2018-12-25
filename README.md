@@ -84,10 +84,13 @@ googletts [options] <text>
 # -t, --text:    set input text file
 # -r, --retries: set speech synthesis retries (8)
 # -c, --credentials: set google credentials path
-# -oa, --acodec:     set acodec (copy)
+# -a, --acodec:      set acodec (copy)
+# -acae, --audioconfig_audioencoding: set audio encoding
+# -acp,  --audioconfig_pitch:         set audio pitch (0.0)
+# -acsr, --audioconfig_speakingrate:  set audio speaking rate (1.0)
 # -vlc, --voice_languagecode:    set voice language code (en-US)
 # -vsg, --voice_ssmlgender:      set voice SSML gender (NEUTRAL)
-# -vn, --voice_name:             set voice name (en-US-Wavenet-D)
+# -vn,  --voice_name:            set voice name (en-US-Wavenet-D)
 # -qbt, --quote_breaktime:       set quoted text break time (250)
 # -qel, --quote_emphasislevel:   set quoted text emphasis level (moderate)
 # -hbt, --heading_breaktime:     set heading text break time (4000)
@@ -107,6 +110,9 @@ $GOOGLETTS_RETRIES # set speech synthesis retries (8)
 $GOOGLE_APPLICATION_CREDENTIALS  # set google credentials path
 $GOOGLETTS_CREDENTIALS           # set google credentials path
 $GOOGLETTS_ACODEC                # set audio acodec (copy)
+$GOOGLETTS_AUDIOCONFIG_AUDIOENCODING # set audio encoding
+$GOOGLETTS_AUDIOCONFIG_PITCH         # set audio pitch (0.0)
+$GOOGLETTS_AUDIOCONFIG_SPEAKINGRATE  # set audio speaking rate (1.0)
 $GOOGLETTS_VOICE_LANGUAGECODE    # set voice language code (en-US)
 $GOOGLETTS_VOICE_SSMLGENDER      # set voice SSML gender (NEUTRAL)
 $GOOGLETTS_VOICE_NAME            # set voice name (en-US-Wavenet-D)
@@ -169,6 +175,11 @@ options = {
     // see other TTS client options below
   },
   acodec: 'copy',    // set audio acodec
+  audioConfig: {
+    audioEncoding: null, // set audio encoding
+    pitch: 0.0,          // set audio pitch
+    speakingRate: 1.0    // set audio speaking rate
+  },
   voice: {
     languageCode: 'en-US',   // set voice language code
     ssmlGender: 'NEUTRAL'    // set voice SSML gender
