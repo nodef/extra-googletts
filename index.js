@@ -25,6 +25,11 @@ const OPTIONS = {
     keyFilename: E['GOOGLETTS_CREDENTIALS']||E['GOOGLE_APPLICATION_CREDENTIALS']
   },
   acodec: E['GOOGLETTS_AUDIO_ACODEC']||'copy',
+  audioConfig: {
+    audioEncoding: E['GOOGLETTS_AUDIOCONFIG_AUDIOENCODING']||null,
+    pitch: parseFloat(E['GOOGLETTS_AUDIOCONFIG_PITCH']||'0'),
+    speakingRate: parseFloat(E['GOOGLETTS_AUDIOCONFIG_SPEAKINGRATE']||'1')
+  },
   voice: {
     name:  E['GOOGLETTS_VOICE_NAME'],
     languageCode: E['GOOGLETTS_VOICE_LANGUAGECODE'],
@@ -158,7 +163,8 @@ function voiceConfig(o)  {
 function audiosWrite(out, ssml, tts, o) {
   var l = o.log, v = o.voice;
   var enc = path.extname(out).substring(1).toUpperCase();
-  var req = {input: {ssml}, voice: v, audioConfig: {audioEncoding: enc}};
+  var cfg = Object.assign({audioEncoding: enc}, o.audioConfig);
+  var req = {input: {ssml}, voice: v, audioConfig: cfg};
   return new Promise((fres, frej) => {
     tts.synthesizeSpeech(req, (err, res) => {
       if(err) return frej(err);
@@ -263,7 +269,10 @@ function options(o, k, a, i) {
   else if(k==='-l' || k==='--log') o.log = true;
   else if(k==='-r' || k==='--retries') o.retries = parseInt(a[++i], 10);
   else if(k==='-c' || k==='--credentials') _.set(o, 'credentials.keyFilename', a[++i]);
-  else if(k==='-oa' || k==='--acodec') _.set(o, 'acodec', a[++i]);
+  else if(k==='-a' || k==='--acodec') _.set(o, 'acodec', a[++i]);
+  else if(k==='-acae' || k==='--audioconfig_audioencoding') _.set(o, 'audioConfig.audioEncoding', a[++i]);
+  else if(k==='-acp' || k==='--audioconfig_pitch') _.set(o, 'audioConfig.pitch', a[++i]);
+  else if(k==='-acsr' || k==='--audioconfig_speakingrate') _.set(o, 'audioConfig.speakingRate', a[++i]);
   else if(k==='-vlc' || k==='--voice_languagecode') _.set(o, 'voice.languageCode', a[++i]);
   else if(k==='-vsg' || k==='--voice_ssmlgender') _.set(o, 'voice.ssmlGender', a[++i]);
   else if(k==='-vn' || k==='--voice_name') _.set(o, 'voice.name', a[++i]);
