@@ -251,14 +251,14 @@ async function googletts(out, txt, o) {
   var auds = await outputAudios(aud, ssmls, tts, o);
   out = await outputAudio(out, auds, o);
   var durs = await outputDurations(auds);
-  for(var i=0, j=0, t=0, tt=[], I=secs.length; i<I; i++) {
-    tt[i] = {title: secs[i].title, time: timeFormat(t)};
+  for(var i=0, j=0, t=0, toc=[], I=secs.length; i<I; i++) {
+    toc[i] = {title: secs[i].title, time: timeFormat(t)};
     for(var p=0; p<prts[i]; p++)
       t += durs[j++];
   }
   for(var f of auds) fs.unlink(f, FN_NOP);
-  if(o.log) console.log(' .timetable:', tt);
-  return tt;
+  if(o.log) console.log(' .toc:', toc);
+  return toc;
 };
 
 // Get options from arguments.
@@ -298,9 +298,9 @@ async function shell(a) {
   for(var i=2, I=a.length; i<I;)
     i = options(o, a[i], a, i);
   if(o.help) return cp.execSync('less README.md', {cwd: __dirname, stdio: STDIO});
-  var tt = await googletts(null, null, o);
+  var toc = await googletts(null, null, o);
   if(o.log || OPTIONS.log) return;
-  for(var t of tt)
-    if(t.title) console.log(t.time+' '+t.title);
+  for(var c of toc)
+    if(c.title) console.log(c.time+' '+c.title);
 };
 if(require.main===module) shell(process.argv);
