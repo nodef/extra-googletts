@@ -161,10 +161,10 @@ function voiceConfig(o)  {
 
 // Write TTS audio to file.
 function audiosWrite(out, ssml, tts, o) {
-  var l = o.log, v = o.voice;
+  var l = o.log, ac = o.audioConfig||{}, v = o.voice;
   var enc = path.extname(out).substring(1).toUpperCase();
-  var cfg = Object.assign({audioEncoding: enc}, o.audioConfig);
-  var req = {input: {ssml}, voice: v, audioConfig: cfg};
+  ac.audioEncoding = ac.audioEncoding||enc;
+  var req = {input: {ssml}, voice: v, audioConfig: ac};
   return new Promise((fres, frej) => {
     tts.synthesizeSpeech(req, (err, res) => {
       if(err) return frej(err);
