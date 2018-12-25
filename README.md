@@ -163,7 +163,7 @@ googletts(output, text, options={})
 // output:  output audio file
 // text:    input text
 // options: given below
-// -> Promise <topic timetable>
+// -> Promise <table of contents>
 
 // Default options:
 options = {
