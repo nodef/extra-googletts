@@ -210,7 +210,7 @@ options = {
     length: 5000,        // set block length
   },
   config: {
-    credentailsFile: null // set path to credentials
+    credentialsFile: null // set path to credentials
   },
   params: null            // set synthesize speech parameters "directly"
 }
