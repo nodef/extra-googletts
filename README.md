@@ -15,9 +15,8 @@ Sample: ["I want to order a stuffed crust pizza"](https://clyp.it/kje2yfdk).
 
 ### install
 
-1. Install [Node.js], if not installed.
-2. Run `npm install -g extra-googletts` in [console].
-3. To install this as a package use `npm install extra-googletts`.
+1. Run `npm install -g extra-googletts` in **console**.
+2. To install this as a package use `npm install extra-googletts`.
 
 ### get service account key
 
@@ -62,7 +61,7 @@ googletts "I want to order a stuffed crust pizza"
 googletts -t speech.txt -o speech.mp3
 # speech.mp3 created from text in speech.txt
 
-googletts "Hello 911, my husband is in danger!" -vsg FEMALE
+googletts "Hello 911, my husband is in danger!" -vg FEMALE
 # out.mp3 created with female voice
 
 echo "Dead man walking." | googletts --log -vn en-US-Wavenet-B
@@ -83,49 +82,52 @@ googletts [options] <text>
 # -o, --output:  set output audio file (out.mp3)
 # -t, --text:    set input text file
 # -r, --retries: set speech synthesis retries (8)
-# -c, --credentials: set google credentials path
-# -a, --acodec:      set acodec (copy)
-# -acae, --audioconfig_audioencoding: set audio encoding
-# -acp,  --audioconfig_pitch:         set audio pitch (0.0)
-# -acsr, --audioconfig_speakingrate:  set audio speaking rate (1.0)
-# -vlc, --voice_languagecode:    set voice language code (en-US)
-# -vsg, --voice_ssmlgender:      set voice SSML gender (NEUTRAL)
-# -vn,  --voice_name:            set voice name (en-US-Wavenet-D)
-# -qbt, --quote_breaktime:       set quoted text break time (250)
-# -qel, --quote_emphasislevel:   set quoted text emphasis level (moderate)
-# -hbt, --heading_breaktime:     set heading text break time (4000)
-# -hbd, --heading_breakdiff:     set heading text break difference (250)
-# -hel, --heading_emphasislevel: set heading text emphasis level (strong)
-# -ebt, --ellipsis_breaktime:    set ellipsis break time (1500)
-# -dbt, --dash_breaktime:        set dash break time (500)
-# -nbt, --newline_breaktime:     set newline break time (1000)
-# -bl, --block_length:    set SSMLs block length (5000)
-# -bs, --block_separator: set SSMLs block separator (.)
+# -a, --acodec:  set acodec (copy)
+# -ae, --audio_encoding:  set audio encoding (MP3)
+# -af, --audio_frequency: set audio frequency/sample rate
+# -lc, --language_code:   set language code (en-US)
+# -vn, --voice_name:      set voice name
+# -vg, --voice_gender:    set voice gender (neutral)
+# -vp, --voice_pitch:     set voice pitch change (0.0)
+# -vr, --voice_rate:      set voice speaking rate (1.0)
+# -vv, --voice_volume:    set voice volume gain in dB (0.0)
+# -qb, --quote_break:        set quoted text break time (250)
+# -qe, --quote_emphasis:     set quoted text emphasis level (moderate)
+# -hb, --heading_break:      set heading text break time (4000)
+# -hd, --heading_difference: set heading text break difference (250)
+# -he, --heading_emphasis:   set heading text emphasis level (strong)
+# -eb, --ellipsis_break:     set ellipsis break time (1500)
+# -db, --dash_break:         set dash break time (500)
+# -nb, --newline_break:      set newline break time (1000)
+# -bs, --block_separator:    set block separator (.)
+# -bl, --block_length:       set block length (5000)
+# -ccf, --config_credentials_file: set google credentials path
 
 # Environment variables:
-$GOOGLETTS_LOG     # enable log (0)
-$GOOGLETTS_OUTPUT  # set output audio file (out.mp3)
-$GOOGLETTS_TEXT    # set input text file
-$GOOGLETTS_RETRIES # set speech synthesis retries (8)
-$GOOGLE_APPLICATION_CREDENTIALS  # set google credentials path
-$GOOGLETTS_CREDENTIALS           # set google credentials path
-$GOOGLETTS_ACODEC                # set audio acodec (copy)
-$GOOGLETTS_AUDIOCONFIG_AUDIOENCODING # set audio encoding
-$GOOGLETTS_AUDIOCONFIG_PITCH         # set audio pitch (0.0)
-$GOOGLETTS_AUDIOCONFIG_SPEAKINGRATE  # set audio speaking rate (1.0)
-$GOOGLETTS_VOICE_LANGUAGECODE    # set voice language code (en-US)
-$GOOGLETTS_VOICE_SSMLGENDER      # set voice SSML gender (NEUTRAL)
-$GOOGLETTS_VOICE_NAME            # set voice name (en-US-Wavenet-D)
-$GOOGLETTS_QUOTE_BREAKTIME       # set quoted text break time (250)
-$GOOGLETTS_QUOTE_EMPHASISLEVEL   # set quoted text emphasis level (moderate)
-$GOOGLETTS_HEADING_BREAKTIME     # set heading text break time (4000)
-$GOOGLETTS_HEADING_BREAKDIFF     # set heading text break difference (250)
-$GOOGLETTS_HEADING_EMPHASISLEVEL # set heading text emphasis level (strong)
-$GOOGLETTS_ELLIPSIS_BREAKTIME    # set ellipsis break time (1500)
-$GOOGLETTS_DASH_BREAKTIME        # set dash break time (500)
-$GOOGLETTS_NEWLINE_BREAKTIME     # set newline break time (1000)
-$GOOGLETTS_BLOCK_LENGTH    # set SSMLs block length (5000)
-$GOOGLETTS_BLOCK_SEPARATOR # set SSMLs block separator (.)
+$TTS_LOG     # enable log (0)
+$TTS_OUTPUT  # set output audio file (out.mp3)
+$TTS_TEXT    # set input text file
+$TTS_RETRIES # set speech synthesis retries (8)
+$TTS_ACODEC  # set acodec (copy)
+$TTS_AUDIO_ENCODING     # set audio encoding (MP3)
+$TTS_AUDIO_FREQUENCY    # set audio frequency/sample rate
+$TTS_LANGUAGE_CODE      # set language code (en-US)
+$TTS_VOICE_NAME         # set voice name
+$TTS_VOICE_GENDER       # set voice gender (neutral)
+$TTS_VOICE_PITCH        # set voice pitch change (0.0)
+$TTS_VOICE_RATE         # set voice speaking rate (1.0)
+$TTS_VOICE_VOLUME       # set voice volume gain in dB (0.0)
+$TTS_QUOTE_BREAK        # set quoted text break time (250)
+$TTS_QUOTE_EMPHASIS     # set quoted text emphasis level (moderate)
+$TTS_HEADING_BREAK      # set heading text break time (4000)
+$TTS_HEADING_DIFFERENCE # set heading text break difference (250)
+$TTS_HEADING_EMPHASIS   # set heading text emphasis level (strong)
+$TTS_ELLIPSIS_BREAK     # set ellipsis break time (1500)
+$TTS_DASH_BREAK         # set dash break time (500)
+$TTS_NEWLINE_BREAK      # set newline break time (1000)
+$TTS_BLOCK_SEPARATOR    # set block separator (.)
+$TTS_BLOCK_LENGTH       # set block length (5000)
+$GOOGLE_APPLICATION_CREDENTIALS # set google credentials path
 ```
 <br>
 
