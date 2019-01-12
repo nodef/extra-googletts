@@ -29,7 +29,7 @@ const OPTIONS = {
   },
   voice: {
     name:  E['TTS_VOICE_NAME']||null,
-    gender: E['TTS_VOICE_GENDER']||'neutral',
+    gender: E['TTS_VOICE_GENDER']||'NEUTRAL',
     pitch: parseFloat(E['TTS_VOICE_PITCH']||'0'),
     rate: parseFloat(E['TTS_VOICE_RATE']||'1'),
     volume: parseFloat(E['TTS_VOICE_VOLUME']||'0')
