@@ -17,44 +17,46 @@ const STDIO = [0, 1, 2];
 const OPTIONS = {
   log: boolean(E['TTS_LOG']||'0'),
   output: E['TTS_OUTPUT']||'out.mp3',
-  text: E['TTS_TEXT'],
+  text: E['TTS_TEXT']||null,
   retries: parseInt(E['TTS_RETRIES']||'8', 10),
-  credentials: {
-    keyFilename: E['TTS_CREDENTIALS']||E['GOOGLE_APPLICATION_CREDENTIALS']
-  },
   acodec: E['TTS_AUDIO_ACODEC']||'copy',
-  audioConfig: {
-    audioEncoding: E['TTS_AUDIOCONFIG_AUDIOENCODING']||null,
-    pitch: parseFloat(E['TTS_AUDIOCONFIG_PITCH']||'0'),
-    speakingRate: parseFloat(E['TTS_AUDIOCONFIG_SPEAKINGRATE']||'1')
+  audio: {
+    encoding: E['TTS_AUDIO_ENCODING']||null
+  },
+  language: {
+    code: E['TTS_LANGUAGE_CODE']||null
   },
   voice: {
-    name:  E['TTS_VOICE_NAME'],
-    languageCode: E['TTS_VOICE_LANGUAGECODE'],
-    ssmlGender: E['TTS_VOICE_SSMLGENDER']
+    name:  E['TTS_VOICE_NAME']||null,
+    gender: E['TTS_VOICE_GENDER']||'neutral',
+    pitch: parseFloat(E['TTS_VOICE_PITCH']||'0'),
+    rate: parseFloat(E['TTS_VOICE_RATE']||'1')
   },
   quote: {
-    breakTime: parseFloat(E['TTS_QUOTE_BREAKTIME']||'250'),
-    emphasisLevel: E['TTS_QUOTE_EMPHASISLEVEL']||'moderate'
+    break: parseFloat(E['TTS_QUOTE_BREAK']||'250'),
+    emphasis: E['TTS_QUOTE_EMPHASIS']||'moderate'
   },
   heading: {
-    breakTime: parseFloat(E['TTS_HEADING_BREAKTIME']||'4000'),
-    breakDiff: parseFloat(E['TTS_HEADING_BREAKDIFF']||'250'),
-    emphasisLevel: E['TTS_HEADING_EMPHASISLEVEL']||'strong',
+    break: parseFloat(E['TTS_HEADING_BREAK']||'4000'),
+    difference: parseFloat(E['TTS_HEADING_DIFFERENCE']||'250'),
+    emphasis: E['TTS_HEADING_EMPHASIS']||'strong',
   },
   ellipsis: {
-    breakTime: parseFloat(E['TTS_ELLIPSIS_BREAKTIME']||'1500')
+    break: parseFloat(E['TTS_ELLIPSIS_BREAK']||'1500')
   },
   dash: {
-    breakTime: parseFloat(E['TTS_DASH_BREAKTIME']||'500')
+    break: parseFloat(E['TTS_DASH_BREAK']||'500')
   },
   newline: {
-    breakTime: parseFloat(E['TTS_NEWLINE_BREAKTIME']||'1000')
+    break: parseFloat(E['TTS_NEWLINE_BREAK']||'1000')
   },
   block: {
-    length: parseFloat(E['TTS_BLOCK_LENGTH']||'5000'),
-    separator: E['TTS_BLOCK_SEPARATOR']||'.'
+    separator: E['TTS_BLOCK_SEPARATOR']||'.',
+    length: parseFloat(E['TTS_BLOCK_LENGTH']||'5000')
   },
+  credentials: {
+    keyFilename: E['TTS_CREDENTIALS']||E['GOOGLE_APPLICATION_CREDENTIALS']
+  }
 };
 const VOICE = {
   name: 'en-US-Wavenet-D',
