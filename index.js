@@ -149,7 +149,8 @@ function ttsParams(out, txt, o) {
   var lc = vn? vn:(o.language.code||OPTIONS.language.code);
   lc = lc.substring(0, 2).toLowerCase()+'-';
   lc += lc.length>=5? lc.substring(3, 5).toUpperCase():'US';
-  var vg = (o.voice.gender||OPTIONS.voice.gender).toUpperCase();
+  var vg = (o.voice.gender||OPTIONS.voice.gender);
+  vg = /^m/i.test(vg)? 'MALE':(/^f/i.test(vg)? 'FEMALE':'NEUTRAL');
   if(lc===OPTIONS.language.code && vg===OPTIONS.voice.gender) vn = vn||OPTIONS.voice.name;
   var typ = (o.audio.encoding||path.extname(out).substring(1)).toLowerCase();
   var ae = o.audio.encoding||AUDIO_ENCODING.get(typ)||'MP3';
@@ -236,6 +237,7 @@ async function googletts(out, txt, o) {
   var o = _.merge({}, OPTIONS, o);
   if(o.log) console.log('@googletts:', out, txt);
   o.params = o.params||ttsParams(out, txt, o);
+  console.log(o);
   var tts = new textToSpeech.TextToSpeechClient(gcpconfig(o.config));
   var ext = path.extname(out);
   var aud = tempy.file({extension: ext.substring(1)});
