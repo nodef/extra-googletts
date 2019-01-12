@@ -262,6 +262,7 @@ async function googletts(out, txt, o) {
 function options(o, k, a, i) {
   var e = k.indexOf('='), v = null, bool = () => true, str = () => a[++i];
   if(e>=0) { v = k.substring(e+1); bool = () => boolean(v); str = () => v; k = k.substring(o, e); }
+  o.config = o.config||{};
   if(k==='--help') o.help = bool();
   else if(k==='-o' || k==='--output') o.output= str();
   else if(k==='-t' || k==='--text') o.text = str();
@@ -284,7 +285,8 @@ function options(o, k, a, i) {
   else if(k==='-nb' || k==='--newline_break') _.set(o, 'newline.break', parseFloat(str()));
   else if(k==='-bs' || k==='--block_separator') _.set(o, 'block.separator', str());
   else if(k==='-bl' || k==='--block_length') _.set(o, 'block.length', parseInt(str(), 10));
-  else if(k==='-c' || k==='--credentials') _.set(o, 'credentials.keyFilename', str());
+  else if(k.startsWith('-c')) gcpconfig.options(o.config, '-'+k.substring(2), a, i);
+  else if(k.startsWith('--config_')) gcpconfig.options(o.config, '--'+k.substring(9), a, i);
   else o.argv = a[i];
   return i+1;
 };
