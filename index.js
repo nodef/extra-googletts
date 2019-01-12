@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const textToSpeech = require('@google-cloud/text-to-speech');
+const gcpconfig = require('extra-gcpconfig');
 const musicMetadata = require('music-metadata');
-const randomItem = require('random-item');
 const getStdin = require('get-stdin');
 const boolean = require('boolean');
 const tempy = require('tempy');
@@ -19,9 +19,10 @@ const OPTIONS = {
   output: E['TTS_OUTPUT']||'out.mp3',
   text: E['TTS_TEXT']||null,
   retries: parseInt(E['TTS_RETRIES']||'8', 10),
-  acodec: E['TTS_AUDIO_ACODEC']||'copy',
+  acodec: E['TTS_ACODEC']||'copy',
   audio: {
-    encoding: E['TTS_AUDIO_ENCODING']||null
+    encoding: E['TTS_AUDIO_ENCODING']||null,
+    frequency: parseInt(E['TTS_AUDIO_FREQUENCY'], 10)
   },
   language: {
     code: E['TTS_LANGUAGE_CODE']||'en-US'
@@ -30,7 +31,8 @@ const OPTIONS = {
     name:  E['TTS_VOICE_NAME']||null,
     gender: E['TTS_VOICE_GENDER']||'neutral',
     pitch: parseFloat(E['TTS_VOICE_PITCH']||'0'),
-    rate: parseFloat(E['TTS_VOICE_RATE']||'1')
+    rate: parseFloat(E['TTS_VOICE_RATE']||'1'),
+    volume: parseFloat(E['TTS_VOICE_VOLUME']||'0')
   },
   quote: {
     break: parseFloat(E['TTS_QUOTE_BREAK']||'250'),
@@ -54,9 +56,7 @@ const OPTIONS = {
     separator: E['TTS_BLOCK_SEPARATOR']||'.',
     length: parseFloat(E['TTS_BLOCK_LENGTH']||'5000')
   },
-  credentials: {
-    keyFilename: E['TTS_CREDENTIALS']||E['GOOGLE_APPLICATION_CREDENTIALS']
-  },
+  config: null,
   params: null
 };
 const AUDIO_ENCODING = new Map([
@@ -233,11 +233,10 @@ async function outputAudio(out, auds, o) {
  * @returns promise <out>.
  */
 async function googletts(out, txt, o) {
-  var o = _.merge({}, OPTIONS, o), c = o.credentials;
+  var o = _.merge({}, OPTIONS, o);
   if(o.log) console.log('@googletts:', out, txt);
-  if(c.keyFilename) c.keyFilename = randomItem(c.keyFilename.split(';'));
   o.params = o.params||ttsParams(out, txt, o);
-  var tts = new textToSpeech.TextToSpeechClient(c);
+  var tts = new textToSpeech.TextToSpeechClient(gcpconfig(o.config));
   var ext = path.extname(out);
   var aud = tempy.file({extension: ext.substring(1)});
   var secs = textSections('\n'+txt), prts = [], ssmls = [];
