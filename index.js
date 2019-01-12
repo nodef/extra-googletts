@@ -64,11 +64,6 @@ const AUDIO_ENCODING = new Map([
   ['mp3', 'MP3'],
   ['ogg', 'OGG_OPUS']
 ]);
-const VOICE = {
-  name: 'en-US-Wavenet-D',
-  languageCode: 'en-US',
-  ssmlGender: 'NEUTRAL'
-};
 const FN_NOP = () => 0;
 
 
