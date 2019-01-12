@@ -266,7 +266,7 @@ function options(o, k, a, i) {
   if(k==='--help') o.help = bool();
   else if(k==='-o' || k==='--output') o.output= str();
   else if(k==='-t' || k==='--text') o.text = str();
-  else if(k==='-l' || k==='--log') o.log = str();
+  else if(k==='-l' || k==='--log') o.log = bool();
   else if(k==='-r' || k==='--retries') o.retries = parseInt(str(), 10);
   else if(k==='-a' || k==='--acodec') _.set(o, 'acodec', str());
   else if(k==='-ae' || k==='--audio_encoding') _.set(o, 'audio.encoding', str());
