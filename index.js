@@ -79,13 +79,6 @@ function pathFilename(pth) {
   return pth.substring(0, pth.length-path.extname(pth).length);
 };
 
-// Read file, return promise.
-function fsReadFile(pth, o) {
-  return new Promise((fres, frej) => fs.readFile(pth, o, (err, data) => {
-    return err? frej(err):fres(data);
-  }));
-};
-
 // Write file, return promise.
 function fsWriteFile(pth, dat, o) {
   return new Promise((fres, frej) => fs.writeFile(pth, dat, o, (err) => {
@@ -234,9 +227,7 @@ async function outputAudio(out, auds, o) {
  * @returns promise <out>.
  */
 async function googletts(out, txt, o) {
-  var o = _.merge({}, OPTIONS, o);
-  var out = out||o.output, c = o.credentials
-  var txt = txt||o.input||(o.text? await fsReadFile(o.text, 'utf8'):null);
+  var o = _.merge({}, OPTIONS, o), c = o.credentials;
   if(o.log) console.log('@googletts:', out, txt);
   if(c.keyFilename) c.keyFilename = randomItem(c.keyFilename.split(';'));
   var tts = new textToSpeech.TextToSpeechClient(c);
@@ -300,7 +291,9 @@ async function shell(a) {
   for(var i=2, I=a.length; i<I;)
     i = options(o, a[i], a, i);
   if(o.help) return cp.execSync('less README.md', {cwd: __dirname, stdio: STDIO});
-  var toc = await googletts(null, null, o);
+  var txt = o.text? fs.readFileSync(o.text, 'utf8'):o.argv||'';
+  var out = o.output||'out.mp3';
+  var toc = await googletts(out, txt, o);
   if(o.log || OPTIONS.log) return;
   for(var c of toc)
     if(c.title) console.log(c.time+' '+c.title);
