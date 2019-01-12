@@ -58,6 +58,11 @@ const OPTIONS = {
     keyFilename: E['TTS_CREDENTIALS']||E['GOOGLE_APPLICATION_CREDENTIALS']
   }
 };
+const AUDIO_ENCODING = new Map([
+  ['wav', 'LINEAR16'],
+  ['mp3', 'MP3'],
+  ['ogg', 'OGG_OPUS']
+]);
 const VOICE = {
   name: 'en-US-Wavenet-D',
   languageCode: 'en-US',
@@ -99,21 +104,22 @@ function cpExec(cmd, o) {
 // Get SSML from text.
 function textSsml(txt, o) {
   var q = o.quote, h = o.heading, e = o.ellipsis, d = o.dash, n = o.newline;
+  // txt = txt.replace(/\s*&\s*/g, ' and ');
   txt = txt.replace(/\"(.*?)\"/gm, (m, p1) => {
-    var brk = `<break time="${q.breakTime}ms"/>`;
-    var emp = `<emphasis level="${q.emphasisLevel}">"${p1}"</emphasis>`;
+    var brk = `<break time="${q.break}ms"/>`;
+    var emp = `<emphasis level="${q.emphasis}">"${p1}"</emphasis>`;
     return brk+emp+brk;
   });
   txt = txt.replace(/(=+)\s(.*?)\s\1/g, (m, p1, p2) => {
-    var brk = `<break time="${h.breakTime-p1.length*h.breakDiff}ms"/>`;
-    var emp = `<emphasis level="${h.emphasisLevel}">${p2}</emphasis>`;
+    var brk = `<break time="${h.break-p1.length*h.difference}ms"/>`;
+    var emp = `<emphasis level="${h.emphasis}">${p2}</emphasis>`;
     return brk+'Topic '+emp+brk;
   });
   // txt = txt.replace(/\((.*?)\)/gm, '<emphasis level="reduced">($1)</emphasis>');
   // txt = txt.replace(/\[(.*?)\]/gm, '<emphasis level="reduced">[$1]</emphasis>');
-  txt = txt.replace(/\.\.\./g, `<break time="${e.breakTime}ms"/>...`);
-  txt = txt.replace(/\—/g, `<break time="${d.breakTime}ms"/>—`);
-  txt = txt.replace(/(\r?\n)+/gm, `<break time="${n.breakTime}ms"/>\n`);
+  txt = txt.replace(/\.\.\./g, `<break time="${e.break}ms"/>...`);
+  txt = txt.replace(/\—/g, `<break time="${d.break}ms"/>—`);
+  txt = txt.replace(/(\r?\n)+/gm, `<break time="${n.break}ms"/>\n`);
   return `<speak>${txt}</speak>`;
 };
 
@@ -141,15 +147,24 @@ function textSections(txt) {
   return secs;
 };
 
-// Get voice config from options.
-function voiceConfig(o)  {
-  var n = o.name;
-  var lc = n? n:(o.languageCode||VOICE.languageCode);
+// Get TTS synthesize speech params.
+function ttsParams(out, txt, o) {
+  var vn = o.voice.name;
+  var lc = vn? vn:(o.language.code||OPTIONS.language.code);
   lc = lc.substring(0, 2).toLowerCase()+'-';
   lc += lc.length>=5? lc.substring(3, 5).toUpperCase():'US';
-  var sg = (o.ssmlGender||VOICE.ssmlGender).toUpperCase();
-  if(lc===VOICE.languageCode && sg===VOICE.ssmlGender) n = n||VOICE.name;
-  return {name: n, languageCode: lc, ssmlGender: sg};
+  var vg = (o.voice.gender||OPTIONS.voice.gender).toUpperCase();
+  if(lc===OPTIONS.language.code && vg===OPTIONS.voice.gender) vn = vn||OPTIONS.voice.name;
+  var typ = (o.audio.encoding||path.extname(out).substring(1)).toLowerCase();
+  var ae = o.audio.encoding||AUDIO_ENCODING.get(typ)||'MP3';
+  return {
+    input: {ssml: txt},
+    voice: {languageCode: lc, name: vn, ssmlGender: sg},
+    audioEncoding: {
+      audioEncoding: ae, speakingRate: o.voice.rate||1, pitch: o.voice.pitch||0,
+      volumeGainDb: o.voice.volume||0, sampleRateHertz: o.audio.frequency||undefined
+    }
+  };
 };
 
 // Write TTS audio to file.
