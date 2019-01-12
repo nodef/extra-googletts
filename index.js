@@ -56,7 +56,8 @@ const OPTIONS = {
   },
   credentials: {
     keyFilename: E['TTS_CREDENTIALS']||E['GOOGLE_APPLICATION_CREDENTIALS']
-  }
+  },
+  params: null
 };
 const AUDIO_ENCODING = new Map([
   ['wav', 'LINEAR16'],
@@ -149,7 +150,7 @@ function textSections(txt) {
 
 // Get TTS synthesize speech params.
 function ttsParams(out, txt, o) {
-  var vn = o.voice.name;
+  var vn = o.voice.name||undefined;
   var lc = vn? vn:(o.language.code||OPTIONS.language.code);
   lc = lc.substring(0, 2).toLowerCase()+'-';
   lc += lc.length>=5? lc.substring(3, 5).toUpperCase():'US';
@@ -169,10 +170,7 @@ function ttsParams(out, txt, o) {
 
 // Write TTS audio to file.
 function audiosWrite(out, ssml, tts, o) {
-  var l = o.log, ac = o.audioConfig||{}, v = o.voice;
-  var enc = path.extname(out).substring(1).toUpperCase();
-  ac.audioEncoding = ac.audioEncoding||enc;
-  var req = {input: {ssml}, voice: v, audioConfig: ac};
+  var l = o.log, req = o.params; req.input.ssml = ssml;
   return new Promise((fres, frej) => {
     tts.synthesizeSpeech(req, (err, res) => {
       if(err) return frej(err);
@@ -245,6 +243,7 @@ async function googletts(out, txt, o) {
   var o = _.merge({}, OPTIONS, o), c = o.credentials;
   if(o.log) console.log('@googletts:', out, txt);
   if(c.keyFilename) c.keyFilename = randomItem(c.keyFilename.split(';'));
+  o.params = o.params||ttsParams(out, txt, o);
   var tts = new textToSpeech.TextToSpeechClient(c);
   var ext = path.extname(out);
   var aud = tempy.file({extension: ext.substring(1)});
