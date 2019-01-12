@@ -61,7 +61,7 @@ googletts "I want to order a stuffed crust pizza"
 googletts -t speech.txt -o speech.mp3
 # speech.mp3 created from text in speech.txt
 
-googletts "Hello 911, my husband is in danger!" -vg FEMALE
+googletts "Hello 911, my husband is in danger!" -vg female
 # out.mp3 created with female voice
 
 echo "Dead man walking." | googletts --log -vn en-US-Wavenet-B
