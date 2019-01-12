@@ -228,10 +228,10 @@ async function outputAudio(out, auds, o) {
 
 /**
  * Generate speech audio from super long text through machine (via ["Google TTS"], ["ffmpeg"]).
- * @param {string} out output audio file.
- * @param {string} txt input text.
- * @param {object} o options.
- * @returns promise <out>.
+ * @param {string} out Output audio file.
+ * @param {string} txt Input text.
+ * @param {object} o Options.
+ * @returns Promise <table of contents>.
  */
 async function googletts(out, txt, o) {
   var o = _.merge({}, OPTIONS, o);
