@@ -24,7 +24,7 @@ const OPTIONS = {
     encoding: E['TTS_AUDIO_ENCODING']||null
   },
   language: {
-    code: E['TTS_LANGUAGE_CODE']||null
+    code: E['TTS_LANGUAGE_CODE']||'en-US'
   },
   voice: {
     name:  E['TTS_VOICE_NAME']||null,
@@ -145,7 +145,7 @@ function textSections(txt) {
 
 // Get TTS synthesize speech params.
 function ttsParams(out, txt, o) {
-  var vn = o.voice.name||undefined;
+  var vn = o.voice.name||null;
   var lc = vn? vn:(o.language.code||OPTIONS.language.code);
   lc = lc.substring(0, 2).toLowerCase()+'-';
   lc += lc.length>=5? lc.substring(3, 5).toUpperCase():'US';
@@ -154,11 +154,10 @@ function ttsParams(out, txt, o) {
   var typ = (o.audio.encoding||path.extname(out).substring(1)).toLowerCase();
   var ae = o.audio.encoding||AUDIO_ENCODING.get(typ)||'MP3';
   return {
-    input: {ssml: txt},
-    voice: {languageCode: lc, name: vn, ssmlGender: sg},
-    audioEncoding: {
+    input: {ssml: txt}, voice: {languageCode: lc, ssmlGender: vg, name: vn},
+    audioConfig: {
       audioEncoding: ae, speakingRate: o.voice.rate||1, pitch: o.voice.pitch||0,
-      volumeGainDb: o.voice.volume||0, sampleRateHertz: o.audio.frequency||undefined
+      volumeGainDb: o.voice.volume||0, sampleRateHertz: o.audio.frequency||null
     }
   };
 };
@@ -199,7 +198,6 @@ function outputSsmls(txt, o) {
 
 // Generate output audio part files.
 function outputAudios(out, ssmls, tts, o) {
-  o.voice = voiceConfig(o.voice);
   if(o.log) console.log('-outputAudios:', out, ssmls.length);
   var pth = pathFilename(out), ext = path.extname(out);
   for(var i=0, I=ssmls.length, z=[]; i<I; i++)
