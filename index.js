@@ -237,7 +237,6 @@ async function googletts(out, txt, o) {
   var o = _.merge({}, OPTIONS, o);
   if(o.log) console.log('@googletts:', out, txt);
   o.params = o.params||ttsParams(out, txt, o);
-  console.log(o);
   var tts = new textToSpeech.TextToSpeechClient(gcpconfig(o.config));
   var ext = path.extname(out);
   var aud = tempy.file({extension: ext.substring(1)});
