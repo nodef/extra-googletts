@@ -263,30 +263,32 @@ async function googletts(out, txt, o) {
 
 // Get options from arguments.
 function options(o, k, a, i) {
-  if(k==='--help') o.help = true;
-  else if(k==='-o' || k==='--output') o.output= a[++i];
-  else if(k==='-t' || k==='--text') o.text = a[++i];
-  else if(k==='-l' || k==='--log') o.log = true;
-  else if(k==='-r' || k==='--retries') o.retries = parseInt(a[++i], 10);
-  else if(k==='-c' || k==='--credentials') _.set(o, 'credentials.keyFilename', a[++i]);
-  else if(k==='-a' || k==='--acodec') _.set(o, 'acodec', a[++i]);
-  else if(k==='-acae' || k==='--audioconfig_audioencoding') _.set(o, 'audioConfig.audioEncoding', a[++i]);
-  else if(k==='-acp' || k==='--audioconfig_pitch') _.set(o, 'audioConfig.pitch', a[++i]);
-  else if(k==='-acsr' || k==='--audioconfig_speakingrate') _.set(o, 'audioConfig.speakingRate', a[++i]);
-  else if(k==='-vlc' || k==='--voice_languagecode') _.set(o, 'voice.languageCode', a[++i]);
-  else if(k==='-vsg' || k==='--voice_ssmlgender') _.set(o, 'voice.ssmlGender', a[++i]);
-  else if(k==='-vn' || k==='--voice_name') _.set(o, 'voice.name', a[++i]);
-  else if(k==='-qbt' || k==='--quote_breaktime') _.set(o, 'quote.breakTime', parseFloat(a[++i]));
-  else if(k==='-qel' || k==='--quote_emphasislevel') _.set(o, 'quote.emphasisLevel', a[++i]);
-  else if(k==='-hbt' || k==='--heading_breaktime') _.set(o, 'heading.breakTime', parseFloat(a[++i]));
-  else if(k==='-hbd' || k==='--heading_breakdiff') _.set(o, 'heading.breakDiff', parseFloat(a[++i]));
-  else if(k==='-hel' || k==='--heading_emphasislevel') _.set(o, 'heading.emphasisLevel', a[++i]);
-  else if(k==='-ebt' || k==='--ellipsis_breaktime') _.set(o, 'ellipsis.breakTime', parseFloat(a[++i]));
-  else if(k==='-dbt' || k==='--dash_breaktime') _.set(o, 'dash.breakTime', parseFloat(a[++i]));
-  else if(k==='-nbt' || k==='--newline_breaktime') _.set(o, 'newline.breakTime', parseFloat(a[++i]));
-  else if(k==='-bl' || k==='--block_length') _.set(o, 'block.length', parseInt(a[++i], 10));
-  else if(k==='-bs' || k==='--block_separator') _.set(o, 'block.separator', a[++i]);
-  else o.input = a[i];
+  var e = k.indexOf('='), v = null, bool = () => true, str = () => a[++i];
+  if(e>=0) { v = k.substring(e+1); bool = () => boolean(v); str = () => v; k = k.substring(o, e); }
+  if(k==='--help') o.help = bool();
+  else if(k==='-o' || k==='--output') o.output= str();
+  else if(k==='-t' || k==='--text') o.text = str();
+  else if(k==='-l' || k==='--log') o.log = str();
+  else if(k==='-r' || k==='--retries') o.retries = parseInt(str(), 10);
+  else if(k==='-a' || k==='--acodec') _.set(o, 'acodec', str());
+  else if(k==='-ae' || k==='--audio_encoding') _.set(o, 'audio.encoding', str());
+  else if(k==='-lc' || k==='--language_code') _.set(o, 'language.code', str());
+  else if(k==='-vn' || k==='--voice_name') _.set(o, 'voice.name', str());
+  else if(k==='-vg' || k==='--voice_gender') _.set(o, 'voice.gender', str());
+  else if(k==='-vp' || k==='--voice_pitch') _.set(o, 'voice.pitch', parseFloat(str()));
+  else if(k==='-vr' || k==='--voice_rate') _.set(o, 'voice.rate', parseFloat(str()));
+  else if(k==='-qb' || k==='--quote_break') _.set(o, 'quote.break', parseFloat(str()));
+  else if(k==='-qe' || k==='--quote_emphasis') _.set(o, 'quote.emphasis', str());
+  else if(k==='-hb' || k==='--heading_break') _.set(o, 'heading.break', parseFloat(str()));
+  else if(k==='-hd' || k==='--heading_difference') _.set(o, 'heading.difference', parseFloat(str()));
+  else if(k==='-he' || k==='--heading_emphasis') _.set(o, 'heading.emphasis', str());
+  else if(k==='-eb' || k==='--ellipsis_break') _.set(o, 'ellipsis.break', parseFloat(str()));
+  else if(k==='-db' || k==='--dash_break') _.set(o, 'dash.break', parseFloat(str()));
+  else if(k==='-nb' || k==='--newline_break') _.set(o, 'newline.break', parseFloat(str()));
+  else if(k==='-bs' || k==='--block_separator') _.set(o, 'block.separator', str());
+  else if(k==='-bl' || k==='--block_length') _.set(o, 'block.length', parseInt(str(), 10));
+  else if(k==='-c' || k==='--credentials') _.set(o, 'credentials.keyFilename', str());
+  else o.argv = a[i];
   return i+1;
 };
 googletts.options = options;
@@ -294,7 +296,7 @@ module.exports = googletts;
 
 // Run on shell.
 async function shell(a) {
-  var o = {input: await getStdin()};
+  var o = {argv: await getStdin()};
   for(var i=2, I=a.length; i<I;)
     i = options(o, a[i], a, i);
   if(o.help) return cp.execSync('less README.md', {cwd: __dirname, stdio: STDIO});
