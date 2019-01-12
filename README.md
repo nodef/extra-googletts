@@ -146,7 +146,7 @@ await googletts('speech.mp3', speech)
 // speech.mp3 created from text in speech.txt
 
 await googletts('out.mp3', 'Hello 911, my husband is in danger!', {
-  voice: {ssmlGender: 'FEMALE'}
+  voice: {gender: 'FEMALE'}
 });
 // out.mp3 created with female voice
 
@@ -172,43 +172,47 @@ options = {
   stdio: [0, 1, 2], // set child process stdio
   log: false,       // enable log
   retries: 8,       // set speech synthesis retries
-  credentials: {
-    keyFilename: '' // path to credentials
-    // see other TTS client options below
+  acodec: 'copy',   // set audio acodec
+  audio: {
+    encoding: 'MP3',     // set audio encoding
+    frequency: 0,        // set audio frequency/sample rate
   },
-  acodec: 'copy',    // set audio acodec
-  audioConfig: {
-    audioEncoding: null, // set audio encoding
-    pitch: 0.0,          // set audio pitch
-    speakingRate: 1.0    // set audio speaking rate
+  language: {
+    code: 'en-US'        // set language code
   },
   voice: {
-    languageCode: 'en-US',   // set voice language code
-    ssmlGender: 'NEUTRAL'    // set voice SSML gender
-    name: 'en-US-Wavenet-D', // set voice name
+    name: null,          // set voice name
+    gender: 'NEUTRAL'    // set voice SSML gender
+    pitch: 0.0,          // set voice pitch change
+    rate: 1.0,           // set voice speaking rate
+    volume: 0.0,         // set voice volume gain in dB
   }
   quote: {
-    breakTime: 250,           // set quoted text break time
-    emphasisLevel: 'moderate' // set quoted text emphasis level
+    break: 250,          // set quoted text break time
+    emphasis: 'moderate' // set quoted text emphasis level
   },
   heading: {
-    breakTime: 4000,         // set heading text break time
-    breakDiff: 250,          // set heading text break difference
-    emphasisLevel: 'strong', // set heading text emphasis level
+    break: 4000,         // set heading text break time
+    difference: 250,     // set heading text break difference
+    emphasis: 'strong',  // set heading text emphasis level
   },
   ellipsis: {
-    breakTime: 1500 // set ellipsis break time
+    break: 1500          // set ellipsis break time
   },
   dash: {
-    breakTime: 500  // set dash break time
+    break: 500           // set dash break time
   },
   newline: {
-    breakTime: 1000 // set newline break time
+    break: 1000          // set newline break time
   },
   block: {
-    length: 5000,  // set SSMLs block length
-    separator: '.' // set SSMLs block separator
-  }
+    separator: '.'       // set block separator
+    length: 5000,        // set block length
+  },
+  config: {
+    credentailsFile: null // set path to credentials
+  },
+  params: null            // set synthesize speech parameters "directly"
 }
 ```
 <br>
@@ -231,11 +235,8 @@ Suggestions are welcome. Please [create an issue].
 ["ffmpeg"]: https://ffmpeg.org
 [Upload Wikipedia TTS videos on YouTube]: https://www.youtube.com/results?search_query=wikipedia+audio+article
 
-[Node.js]: https://nodejs.org/en/download/
-[console]: https://en.wikipedia.org/wiki/Shell_(computing)#Text_(CLI)_shells
 [Enable API]: https://console.cloud.google.com/flows/enableapi?apiid=texttospeech.googleapis.com
 [Setup authentication]: https://cloud.google.com/docs/authentication/getting-started
-
 [account]: https://accounts.google.com/signup
 [Google Cloud Platform]: https://console.developers.google.com/
 [new project]: https://console.cloud.google.com/projectcreate
