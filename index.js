@@ -15,47 +15,45 @@ const fs = require('fs');
 const E = process.env;
 const STDIO = [0, 1, 2];
 const OPTIONS = {
-  stdio: null,
-  help: false,
-  log: boolean(E['GOOGLETTS_LOG']||'0'),
-  output: E['GOOGLETTS_OUTPUT']||'out.mp3',
-  text: E['GOOGLETTS_TEXT'],
-  retries: parseInt(E['GOOGLETTS_RETRIES']||'8', 10),
+  log: boolean(E['TTS_LOG']||'0'),
+  output: E['TTS_OUTPUT']||'out.mp3',
+  text: E['TTS_TEXT'],
+  retries: parseInt(E['TTS_RETRIES']||'8', 10),
   credentials: {
-    keyFilename: E['GOOGLETTS_CREDENTIALS']||E['GOOGLE_APPLICATION_CREDENTIALS']
+    keyFilename: E['TTS_CREDENTIALS']||E['GOOGLE_APPLICATION_CREDENTIALS']
   },
-  acodec: E['GOOGLETTS_AUDIO_ACODEC']||'copy',
+  acodec: E['TTS_AUDIO_ACODEC']||'copy',
   audioConfig: {
-    audioEncoding: E['GOOGLETTS_AUDIOCONFIG_AUDIOENCODING']||null,
-    pitch: parseFloat(E['GOOGLETTS_AUDIOCONFIG_PITCH']||'0'),
-    speakingRate: parseFloat(E['GOOGLETTS_AUDIOCONFIG_SPEAKINGRATE']||'1')
+    audioEncoding: E['TTS_AUDIOCONFIG_AUDIOENCODING']||null,
+    pitch: parseFloat(E['TTS_AUDIOCONFIG_PITCH']||'0'),
+    speakingRate: parseFloat(E['TTS_AUDIOCONFIG_SPEAKINGRATE']||'1')
   },
   voice: {
-    name:  E['GOOGLETTS_VOICE_NAME'],
-    languageCode: E['GOOGLETTS_VOICE_LANGUAGECODE'],
-    ssmlGender: E['GOOGLETTS_VOICE_SSMLGENDER']
+    name:  E['TTS_VOICE_NAME'],
+    languageCode: E['TTS_VOICE_LANGUAGECODE'],
+    ssmlGender: E['TTS_VOICE_SSMLGENDER']
   },
   quote: {
-    breakTime: parseFloat(E['GOOGLETTS_QUOTE_BREAKTIME']||'250'),
-    emphasisLevel: E['GOOGLETTS_QUOTE_EMPHASISLEVEL']||'moderate'
+    breakTime: parseFloat(E['TTS_QUOTE_BREAKTIME']||'250'),
+    emphasisLevel: E['TTS_QUOTE_EMPHASISLEVEL']||'moderate'
   },
   heading: {
-    breakTime: parseFloat(E['GOOGLETTS_HEADING_BREAKTIME']||'4000'),
-    breakDiff: parseFloat(E['GOOGLETTS_HEADING_BREAKDIFF']||'250'),
-    emphasisLevel: E['GOOGLETTS_HEADING_EMPHASISLEVEL']||'strong',
+    breakTime: parseFloat(E['TTS_HEADING_BREAKTIME']||'4000'),
+    breakDiff: parseFloat(E['TTS_HEADING_BREAKDIFF']||'250'),
+    emphasisLevel: E['TTS_HEADING_EMPHASISLEVEL']||'strong',
   },
   ellipsis: {
-    breakTime: parseFloat(E['GOOGLETTS_ELLIPSIS_BREAKTIME']||'1500')
+    breakTime: parseFloat(E['TTS_ELLIPSIS_BREAKTIME']||'1500')
   },
   dash: {
-    breakTime: parseFloat(E['GOOGLETTS_DASH_BREAKTIME']||'500')
+    breakTime: parseFloat(E['TTS_DASH_BREAKTIME']||'500')
   },
   newline: {
-    breakTime: parseFloat(E['GOOGLETTS_NEWLINE_BREAKTIME']||'1000')
+    breakTime: parseFloat(E['TTS_NEWLINE_BREAKTIME']||'1000')
   },
   block: {
-    length: parseFloat(E['GOOGLETTS_BLOCK_LENGTH']||'5000'),
-    separator: E['GOOGLETTS_BLOCK_SEPARATOR']||'.'
+    length: parseFloat(E['TTS_BLOCK_LENGTH']||'5000'),
+    separator: E['TTS_BLOCK_SEPARATOR']||'.'
   },
 };
 const VOICE = {
