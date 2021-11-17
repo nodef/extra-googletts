@@ -1,4 +1,4 @@
-Generate speech audio from super long text through machine (via ["Google TTS"], ["ffmpeg"]).
+Generate speech audio from super long text through machine, via [Google TTS], [ffmpeg].
 > Do you want to:
 > - Share your ideas anonymously on YouTube?
 > - Pretend on phone that you are not a kid (Home Alone)?
@@ -8,17 +8,22 @@ Generate speech audio from super long text through machine (via ["Google TTS"], 
 > - Or, [Upload Wikipedia TTS videos on YouTube]?
 
 Sample: ["I want to order a stuffed crust pizza"](https://clyp.it/kje2yfdk).
+
+<br>
 <br>
 
 
-## setup
+## Setup
 
-### install
+
+### Install
 
 1. Run `npm install -g extra-googletts` in **console**.
 2. To install this as a package use `npm install extra-googletts`.
+3. Make sure [ffmpeg] is installed (present in PATH).
 
-### get service account key
+
+### Get service account key
 
 1. Create an [account] on [Google Cloud Platform].
 2. Create a [new project], and select it.
@@ -36,7 +41,8 @@ Sample: ["I want to order a stuffed crust pizza"](https://clyp.it/kje2yfdk).
 14. Copy downloaded file to a directory.
 15. Rename the file to `account_id.json`.
 
-### set environment variable
+
+### Set environment variable
 
 1. Copy path of `account_id.json`.
 2. Set environment variable `GOOGLE_APPLICATION_CREDENTIALS` to it.
@@ -49,10 +55,12 @@ export GOOGLE_APPLICATION_CREDENTIALS="[PATH OF account_id.json]"
 # on windows powershell
 $env:GOOGLE_APPLICATION_CREDENTIALS="[PATH OF account_id.json]"
 ```
+
+<br>
 <br>
 
 
-## console
+## Console
 
 ```bash
 googletts "I want to order a stuffed crust pizza"
@@ -70,7 +78,7 @@ echo "Dead man walking." | googletts --log -vn en-US-Wavenet-B
 > Available [TTS voices]?
 
 
-### reference
+### Reference
 
 ```bash
 googletts [options] <text>
@@ -129,10 +137,12 @@ $TTS_BLOCK_SEPARATOR    # set block separator (.)
 $TTS_BLOCK_LENGTH       # set block length (5000)
 $GOOGLE_APPLICATION_CREDENTIALS # set google credentials path
 ```
+
+<br>
 <br>
 
 
-## package
+## Package
 
 ```javascript
 const googletts = require('extra-googletts');
@@ -156,7 +166,8 @@ await googletts('out.mp3', 'Dead man walking.', {
 // out.mp3 created with different male voice (log enabled)
 ```
 
-### reference
+
+### Reference
 
 ```javascript
 const googletts = require('extra-googletts');
@@ -215,24 +226,28 @@ options = {
   params: null            // set synthesize speech parameters "directly"
 }
 ```
+
+<br>
 <br>
 
 
-## similar
+## Similar
 
 Do you need anything similar?
 - [extra-youtubeuploader] can upload videos with caption to YouTube.
 - [extra-stillvideo] can generate video from audio and image.
 
 Suggestions are welcome. Please [create an issue].
-<br><br>
+
+<br>
+<br>
 
 
 [![nodef](https://i.imgur.com/LPVfMny.jpg)](https://nodef.github.io)
 > References: [SSML], [TTS voices], [TTS client docs].
 
-["Google TTS"]: https://cloud.google.com/text-to-speech/
-["ffmpeg"]: https://ffmpeg.org
+[Google TTS]: https://cloud.google.com/text-to-speech/
+[ffmpeg]: https://ffmpeg.org
 [Upload Wikipedia TTS videos on YouTube]: https://www.youtube.com/results?search_query=wikipedia+audio+article
 
 [Enable API]: https://console.cloud.google.com/flows/enableapi?apiid=texttospeech.googleapis.com
