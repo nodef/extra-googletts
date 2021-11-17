@@ -1,7 +1,7 @@
 {
   "name": "extra-googletts",
-  "version": "1.6.25",
-  "description": "Generate speech audio from super long text through machine (via \"Google TTS\", \"ffmpeg\").",
+  "version": "1.6.26",
+  "description": "Generate speech audio from super long text through machine, via Google TTS, ffmpeg.",
   "main": "index.js",
   "preferGlobal": true,
   "bin": {
@@ -26,8 +26,7 @@
     "ffmpeg",
     "cli",
     "console",
-    "shell",
-    "merferry"
+    "shell"
   ],
   "author": "wolfram77@gmail.com",
   "license": "MIT",
@@ -36,13 +35,13 @@
   },
   "homepage": "https://github.com/nodef/extra-googletts#readme",
   "dependencies": {
-    "@google-cloud/text-to-speech": "^3.1.0",
-    "boolean": "^3.0.1",
-    "extra-ffmpeg": "^4.0.6",
-    "extra-gcpconfig": "^1.0.3",
-    "get-stdin": "^8.0.0",
+    "get-stdin": "^9.0.0",
+    "tempy": "^2.0.0",
     "lodash": "^4.17.21",
-    "music-metadata": "^7.3.0",
-    "tempy": "^0.7.0"
+    "boolean": "^3.1.4",
+    "@google-cloud/text-to-speech": "^3.3.1",
+    "music-metadata": "^7.11.4",
+    "extra-gcpconfig": "^1.0.4",
+    "extra-ffmpeg": "^4.0.6"
   }
 }
