@@ -263,6 +263,8 @@ Suggestions are welcome. Please [create an issue].
 [extra-youtubeuploader]: https://www.npmjs.com/package/extra-youtubeuploader
 [create an issue]: https://github.com/nodef/extra-googletts/issues
 
+![](https://ga-beacon.deno.dev/G-RC63DPBH3P:SH3Eq-NoQ9mwgYeHWxu7cw/github.com/nodef/extra-googletts)
+
 [SSML]: https://developers.google.com/actions/reference/ssml
 [TTS voices]: https://cloud.google.com/text-to-speech/docs/voices
 [TTS client docs]: https://cloud.google.com/nodejs/docs/reference/text-to-speech/0.1.x/v1beta1.TextToSpeechClient
